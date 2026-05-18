@@ -9,18 +9,18 @@ import { History as HistoryIcon, Search, ChevronRight, Trash2, AlertCircle, Load
 import { Input } from "@/components/ui/input";
 import { Storage } from "@/lib/storage";
 import { AnalysisResult } from "@/lib/analysis-engine";
-import { useUser, useFirestore, useCollection } from "@/firebase";
+import { useUser, useFirebase, useCollection } from "@/firebase";
 import { collection, query, orderBy } from "firebase/firestore";
 
 export default function HistoryPage() {
   const { user } = useUser();
-  const { db } = useFirestore();
+  const { db } = useFirebase();
   const [search, setSearch] = useState('');
   const [localHistory, setLocalHistory] = useState<AnalysisResult[]>([]);
 
   // Real-time Firestore query
   const analysesQuery = useMemo(() => {
-    if (!user) return null;
+    if (!user || !db) return null;
     return query(
       collection(db, "users", user.uid, "analyses"),
       orderBy("createdAt", "desc")

@@ -21,21 +21,21 @@ import { Storage } from "@/lib/storage";
 import { AnalysisResult, calculateLiveScore } from "@/lib/analysis-engine";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { useUser, useFirestore, useDoc } from "@/firebase";
+import { useUser, useFirebase, useDoc } from "@/firebase";
 import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
 
 export default function ResultsPage() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const { user } = useUser();
-  const { db } = useFirestore();
+  const { db } = useFirebase();
   const id = searchParams.get('id');
   
   const [data, setData] = useState<AnalysisResult | null>(null);
 
   // Firestore reference
   const analysisRef = useMemo(() => {
-    if (!user || !id) return null;
+    if (!user || !id || !db) return null;
     return doc(db, "users", user.uid, "analyses", id);
   }, [user, id, db]);
 
@@ -73,7 +73,7 @@ export default function ResultsPage() {
     setData(updatedData);
     Storage.updateAnalysis(updatedData);
 
-    if (user && id) {
+    if (user && id && db) {
       updateDoc(doc(db, "users", user.uid, "analyses", id), {
         skillConfidenceMap: updatedConfidenceMap,
         finalScore: newScore,

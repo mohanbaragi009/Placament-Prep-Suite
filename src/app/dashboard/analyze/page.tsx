@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState } from 'react';
@@ -9,14 +10,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { Sparkles, Loader2, Building2, Briefcase, AlertTriangle } from "lucide-react";
 import { analyzeJobDescription } from "@/ai/flows/jd-analysis-flow";
 import { useToast } from "@/hooks/use-toast";
-import { useFirestore, useUser } from "@/firebase";
+import { useFirebase, useUser } from "@/firebase";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { Storage } from "@/lib/storage";
 
 export default function AnalyzePage() {
   const router = useRouter();
   const { toast } = useToast();
-  const { db } = useFirestore();
+  const { db } = useFirebase();
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ company: '', role: '', jd: '' });
@@ -62,7 +63,7 @@ export default function AnalyzePage() {
       };
 
       // Save to Firestore if authenticated
-      if (user) {
+      if (user && db) {
         const analysisRef = doc(db, "users", user.uid, "analyses", analysisId);
         setDoc(analysisRef, {
           ...finalAnalysis,
