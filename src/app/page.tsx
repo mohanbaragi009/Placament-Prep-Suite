@@ -47,8 +47,8 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="relative z-10 flex-1 flex flex-col items-center justify-center pt-32 pb-20 px-6 text-center max-w-5xl mx-auto animate-in fade-in duration-1000">
-        <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full glass mb-12 shadow-sm border-white/50 animate-in slide-in-from-bottom-4 duration-700">
-          <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+        <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full glass mb-12 shadow-sm border-white/50 animate-in slide-in-from-bottom-4 duration-700 hover:scale-110 transition-transform cursor-default">
+          <Sparkles className="h-4 w-4 text-primary animate-pulse" />
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">NEW: AI MOCK INTERVIEWS</span>
         </div>
 
@@ -62,9 +62,9 @@ export default function LandingPage() {
         </p>
 
         <Link href="/dashboard">
-          <Button size="lg" className="h-16 px-12 rounded-full text-xl font-black bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/30 group transition-all hover:scale-105 active:scale-95 text-white">
+          <Button size="lg" className="h-16 px-12 rounded-full text-xl font-black bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/30 group transition-all hover:scale-110 active:scale-95 text-white">
             Get Started
-            <ChevronRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
+            <ChevronRight className="ml-2 h-6 w-6 group-hover:translate-x-2 transition-transform" />
           </Button>
         </Link>
       </section>
@@ -89,11 +89,11 @@ export default function LandingPage() {
               icon: <BarChart3 className="h-6 w-6 text-primary" />,
             },
           ].map((feature, i) => (
-            <div key={i} className="glass-card p-10 group border-white/60 hover:shadow-2xl hover:-translate-y-2 duration-500">
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform shadow-inner">
+            <div key={i} className="glass-card p-10 group border-white/60">
+              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-12 transition-transform shadow-inner">
                 {feature.icon}
               </div>
-              <h3 className="text-3xl font-headline font-black mb-4 tracking-tight text-slate-900">{feature.title}</h3>
+              <h3 className="text-3xl font-headline font-black mb-4 tracking-tight text-slate-900 group-hover:text-primary transition-colors">{feature.title}</h3>
               <p className="text-slate-600 leading-relaxed font-medium">{feature.description}</p>
             </div>
           ))}
