@@ -176,17 +176,20 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
+        {/* Skill Breakdown Chart - Refined to match image */}
         <Card className="glass-card border-none overflow-hidden hover:rotate-x-2">
-          <CardHeader>
-            <CardTitle className="text-xs font-bold uppercase tracking-widest text-muted-foreground opacity-70">Skill Breakdown</CardTitle>
+          <CardHeader className="pb-0 pt-8 px-8">
+            <CardTitle className="text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+              SKILL BREAKDOWN
+            </CardTitle>
           </CardHeader>
-          <CardContent className="h-[320px] w-full p-4">
+          <CardContent className="h-[360px] w-full p-4 flex items-center justify-center">
             <ResponsiveContainer width="100%" height="100%">
-              <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
-                <PolarGrid stroke="rgba(0,0,0,0.05)" />
+              <RadarChart cx="50%" cy="50%" outerRadius="75%" data={radarData}>
+                <PolarGrid stroke="rgba(0,0,0,0.08)" />
                 <PolarAngleAxis 
                   dataKey="subject" 
-                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11, fontWeight: '700', opacity: 0.8 }} 
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12, fontWeight: '500', opacity: 0.7 }} 
                 />
                 <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
                 <Radar
@@ -194,8 +197,8 @@ export default function Dashboard() {
                   dataKey="A"
                   stroke="hsl(var(--primary))"
                   fill="hsl(var(--primary))"
-                  fillOpacity={0.2}
-                  strokeWidth={3}
+                  fillOpacity={0.15}
+                  strokeWidth={2}
                 />
               </RadarChart>
             </ResponsiveContainer>
