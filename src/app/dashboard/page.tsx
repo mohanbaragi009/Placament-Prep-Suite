@@ -92,8 +92,6 @@ export default function Dashboard() {
   const { data: profile } = useDoc<any>(profileRef as any);
   const displayName = profile?.displayName || user?.displayName || 'Candidate';
 
-  const heroImage = PlaceHolderImages.find(img => img.id === 'dashboard-hero');
-
   useEffect(() => {
     setMounted(true);
     const timer = setTimeout(() => {
@@ -106,40 +104,37 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
-      {/* Refined Hero Welcome Section */}
-      <section className="relative min-h-[340px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl group border border-white/20">
-        {heroImage && (
-          <Image
-            src={heroImage.imageUrl}
-            alt={heroImage.description}
-            fill
-            className="object-cover transition-transform duration-1000 group-hover:scale-105"
-            data-ai-hint={heroImage.imageHint}
-            priority
-          />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-800/40 to-white/10 flex flex-col justify-center p-8 md:p-14 backdrop-blur-[0.5px]">
-          {/* Placement Readiness Badge */}
-          <div className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-primary/60 backdrop-blur-2xl border border-white/10 w-fit mb-6 shadow-xl">
-            <Sparkles className="h-3.5 w-3.5 text-white" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Placement Readiness</span>
+      {/* High-Fidelity Dashboard Hero */}
+      <section className="relative w-full rounded-[3rem] overflow-hidden glass border border-white/40 p-12 md:p-24 flex flex-col items-center text-center shadow-3xl">
+        {/* Soft Background Glows */}
+        <div className="absolute top-0 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col items-center space-y-8 max-w-4xl">
+          {/* Readiness Badge */}
+          <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white/60 backdrop-blur-md border border-white shadow-sm animate-in slide-in-from-top-4 duration-1000">
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <span className="text-[10px] font-black uppercase tracking-[0.25em] text-primary/80">Placement Readiness</span>
           </div>
           
           {/* Main Welcome Text */}
-          <h1 className="text-4xl md:text-7xl font-headline font-bold text-white mb-4 tracking-tight leading-[1.1]">
+          <h1 className="text-5xl md:text-8xl font-headline font-black text-slate-900 tracking-tighter leading-[0.95]">
             Welcome back, <br />
-            {displayName}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-500 to-indigo-600">
+              {displayName}
+            </span>
           </h1>
           
           {/* Readiness Quote */}
-          <p className="text-slate-200/90 text-lg md:text-xl italic max-w-xl mb-8 leading-relaxed font-medium">
-            "Your path to a dream placement is {readinessValue}% complete. Stay consistent."
+          <p className="text-slate-600/80 text-lg md:text-2xl font-medium max-w-2xl leading-relaxed">
+            The all-in-one platform to practice coding, take mock assessments, and track your progress to land your dream job.
           </p>
           
           {/* Action Button */}
-          <div className="flex gap-4">
-            <Button className="rounded-xl h-11 px-8 text-sm font-bold bg-white text-primary hover:bg-white/95 shadow-xl transition-all hover:scale-[1.02] active:scale-95">
+          <div className="pt-4">
+            <Button className="rounded-full h-16 px-12 text-lg font-black bg-primary text-white hover:bg-primary/90 shadow-2xl shadow-primary/30 transition-all hover:scale-105 active:scale-95 group">
               Resume Plan
+              <ChevronRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
           </div>
         </div>
