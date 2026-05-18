@@ -51,7 +51,8 @@
     --popover: 270 50% 8%;
     --popover-foreground: 270 20% 98%;
     
-    --primary: 320 100% 50%;
+    /* Changed from Pink to Electric Blue */
+    --primary: 210 100% 66%; 
     --primary-foreground: 0 0% 100%;
     
     --secondary: 270 40% 15%;
@@ -65,7 +66,7 @@
     
     --border: 270 40% 20%;
     --input: 270 40% 20%;
-    --ring: 320 100% 50%;
+    --ring: 210 100% 66%;
   }
 }
 
@@ -85,7 +86,7 @@
 
   .purple-black body {
     background: 
-      radial-gradient(at 0% 0%, hsla(320, 100%, 50%, 0.15) 0px, transparent 50%),
+      radial-gradient(at 0% 0%, hsla(210, 100%, 60%, 0.15) 0px, transparent 50%),
       radial-gradient(at 100% 0%, hsla(270, 100%, 50%, 0.15) 0px, transparent 50%),
       radial-gradient(at 50% 100%, hsla(280, 100%, 50%, 0.1) 0px, transparent 50%),
       #0a0510;
