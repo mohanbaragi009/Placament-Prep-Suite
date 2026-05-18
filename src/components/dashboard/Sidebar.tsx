@@ -68,11 +68,14 @@ export function Sidebar() {
   return (
     <aside className="w-64 glass-sidebar hidden md:flex flex-col h-screen sticky top-0 z-50">
       <div className="p-6">
-        <div className="flex items-center gap-3 mb-10">
-          <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
+        <div className="flex items-center gap-3 mb-10 group cursor-pointer">
+          <div className="w-10 h-10 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20 group-hover:rotate-6 transition-transform">
             <Code2 className="text-white h-6 w-6" />
           </div>
-          <span className="font-headline text-xl font-bold tracking-tight">Placement Prep</span>
+          <div className="flex flex-col">
+            <span className="font-headline text-xl font-bold tracking-tight text-foreground leading-none">Placement Prep</span>
+            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-primary mt-1 opacity-80">Premium Build</span>
+          </div>
         </div>
 
         <nav className="space-y-2">
