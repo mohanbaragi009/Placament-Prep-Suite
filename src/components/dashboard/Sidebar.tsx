@@ -74,7 +74,7 @@ export function Sidebar() {
           </div>
           <div className="flex flex-col">
             <span className="font-headline text-xl font-bold tracking-tight text-foreground leading-none">Placement Prep</span>
-            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-primary mt-1 opacity-80">Premium Build</span>
+            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-primary mt-1 opacity-80">Dream Career</span>
           </div>
         </div>
 

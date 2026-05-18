@@ -33,7 +33,7 @@ export default function LandingPage() {
           </div>
           <div className="flex flex-col">
             <span className="font-headline text-lg md:text-xl font-black tracking-tight text-slate-900 leading-none">Placement Prep</span>
-            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] text-primary mt-1 opacity-80">Premium Build</span>
+            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.3em] text-primary mt-1 opacity-80">Dream Career</span>
           </div>
         </div>
 
