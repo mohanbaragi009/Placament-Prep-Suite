@@ -43,16 +43,9 @@ The all-in-one, AI-powered platform designed to help candidates ace technical in
    ```
 
 3. Configure environment variables:
-   Create a `.env` file in the root directory and add your Firebase and Genkit configuration:
-   ```env
-   NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
-   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
-   NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-   NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
-   GEMINI_API_KEY=your_gemini_api_key
-   ```
+   Create a `.env` file in the root directory. You will need to obtain your project-specific configuration values from the Firebase Console and your AI provider. Required variables:
+   - Firebase API Configuration (API Key, Auth Domain, Project ID, etc.)
+   - Provider API Key (for Generative AI features)
 
 4. Run the development server:
    ```bash
@@ -71,4 +64,4 @@ To deploy:
 
 ---
 
-© 2025 Placement Prep Platform. ALL RIGHTS RESERVED.
+© 2026 Placement Prep Platform. ALL RIGHTS RESERVED.
