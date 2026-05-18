@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -12,8 +13,11 @@ import {
   PolarRadiusAxis, 
   Radar 
 } from "recharts";
-import { Play, Calendar, CheckCircle2, ChevronRight, ExternalLink } from "lucide-react";
+import { Play, Calendar, CheckCircle2, ChevronRight, ExternalLink, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { useUser, useFirebase, useDoc } from "@/firebase";
+import { doc } from "firebase/firestore";
 
 const radarData = [
   { subject: 'DSA', A: 75, fullMark: 100 },
@@ -49,11 +53,23 @@ const upcomingAssessments = [
 
 export default function Dashboard() {
   const [mounted, setMounted] = useState(false);
+  const { user } = useUser();
+  const { db } = useFirebase();
   const readinessValue = 72;
   const radius = 45;
   const circumference = 2 * Math.PI * radius;
   
   const [offset, setOffset] = useState(circumference);
+
+  const profileRef = React.useMemo(() => {
+    if (!user || !db) return null;
+    return doc(db, "users", user.uid, "profile", "main");
+  }, [user, db]);
+
+  const { data: profile } = useDoc<any>(profileRef as any);
+  const displayName = profile?.displayName || user?.displayName || 'Candidate';
+
+  const heroImage = PlaceHolderImages.find(img => img.id === 'dashboard-hero');
 
   useEffect(() => {
     setMounted(true);
@@ -66,13 +82,39 @@ export default function Dashboard() {
   if (!mounted) return null;
 
   return (
-    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <header>
-        <h1 className="text-4xl font-headline font-bold mb-2 tracking-tight">Candidate Overview</h1>
-        <p className="text-muted-foreground italic">"Success is where preparation and opportunity meet."</p>
-      </header>
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
+      {/* Hero Welcome Section */}
+      <section className="relative h-64 md:h-80 w-full rounded-3xl overflow-hidden shadow-2xl group">
+        {heroImage && (
+          <Image
+            src={heroImage.imageUrl}
+            alt={heroImage.description}
+            fill
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            data-ai-hint={heroImage.imageHint}
+            priority
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/40 to-transparent flex flex-col justify-center p-8 md:p-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 backdrop-blur-md border border-primary/30 w-fit mb-4">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <span className="text-[10px] font-bold uppercase tracking-widest text-white">Placement Readiness</span>
+          </div>
+          <h1 className="text-3xl md:text-5xl font-headline font-bold text-white mb-2 tracking-tight">
+            Welcome back, {displayName}
+          </h1>
+          <p className="text-slate-200 text-sm md:text-lg italic max-w-lg mb-6">
+            "Your path to a dream placement is 72% complete. Stay consistent."
+          </p>
+          <div className="flex gap-4">
+            <Button className="rounded-xl h-11 px-8 font-bold shadow-lg shadow-primary/20">
+              Resume Plan
+            </Button>
+          </div>
+        </div>
+      </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-10">
         <Card className="glass overflow-hidden flex flex-col justify-center border-none shadow-2xl">
           <CardHeader>
             <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Overall Readiness</CardTitle>
