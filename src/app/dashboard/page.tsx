@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState, useEffect } from 'react';
@@ -14,7 +15,7 @@ import {
   PolarRadiusAxis, 
   Radar 
 } from "recharts";
-import { Play, Calendar, CheckCircle2, ChevronRight, ExternalLink, Sparkles, Rocket, Cpu, Users } from "lucide-react";
+import { Play, Calendar, CheckCircle2, ChevronRight, ExternalLink, Sparkles, Rocket, Cpu, Users, Compass } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { useUser, useFirebase, useDoc } from "@/firebase";
@@ -54,22 +55,22 @@ const upcomingAssessments = [
 
 const comingSoonFeatures = [
   {
+    title: "AI Career Navigator",
+    description: "Advanced career path mapping and real-time guidance to navigate your professional journey.",
+    icon: <Compass className="h-5 w-5 text-emerald-500" />,
+    date: "Q3 2026"
+  },
+  {
     title: "AI Interview Simulator",
     description: "Real-time voice and video mock interviews with instant feedback.",
     icon: <Cpu className="h-5 w-5 text-primary" />,
-    date: "Q4 2024"
+    date: "Q4 2026"
   },
   {
     title: "Resume Optimizer",
     description: "ATS-compliant resume tailoring based on specific job descriptions.",
     icon: <Sparkles className="h-5 w-5 text-purple-500" />,
-    date: "Q1 2025"
-  },
-  {
-    title: "Referral Network",
-    description: "Connect with mentors at top companies for direct referrals.",
-    icon: <Users className="h-5 w-5 text-blue-500" />,
-    date: "Q2 2025"
+    date: "Q1 2027"
   }
 ];
 
@@ -315,7 +316,7 @@ export default function Dashboard() {
         <div className="flex items-center gap-3 mb-8">
           <Rocket className="h-6 w-6 text-primary" />
           <h2 className="text-3xl font-headline font-bold tracking-tight">Coming Soon</h2>
-          <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest">Roadmap 2024-25</span>
+          <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest">Roadmap 2026-27</span>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
