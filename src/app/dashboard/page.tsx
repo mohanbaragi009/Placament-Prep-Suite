@@ -106,8 +106,8 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
-      {/* Hero Welcome Section - Updated to match design */}
-      <section className="relative h-[400px] w-full rounded-[3rem] overflow-hidden shadow-2xl group border border-white/20">
+      {/* Refined Hero Welcome Section */}
+      <section className="relative min-h-[340px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl group border border-white/20">
         {heroImage && (
           <Image
             src={heroImage.imageUrl}
@@ -118,20 +118,27 @@ export default function Dashboard() {
             priority
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/40 to-transparent flex flex-col justify-center p-12 md:p-20 backdrop-blur-[1px]">
-          <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-primary/40 backdrop-blur-2xl border border-white/20 w-fit mb-8 shadow-xl">
-            <Sparkles className="h-4 w-4 text-white" />
-            <span className="text-[11px] font-black uppercase tracking-[0.25em] text-white">Placement Readiness</span>
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/90 via-slate-800/40 to-white/10 flex flex-col justify-center p-8 md:p-14 backdrop-blur-[0.5px]">
+          {/* Placement Readiness Badge */}
+          <div className="inline-flex items-center gap-2 px-5 py-1.5 rounded-full bg-primary/60 backdrop-blur-2xl border border-white/10 w-fit mb-6 shadow-xl">
+            <Sparkles className="h-3.5 w-3.5 text-white" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Placement Readiness</span>
           </div>
-          <h1 className="text-5xl md:text-8xl font-headline font-bold text-white mb-4 tracking-tight leading-tight">
+          
+          {/* Main Welcome Text */}
+          <h1 className="text-4xl md:text-7xl font-headline font-bold text-white mb-4 tracking-tight leading-[1.1]">
             Welcome back, <br />
             {displayName}
           </h1>
-          <p className="text-slate-100 text-lg md:text-2xl italic max-w-2xl mb-12 leading-relaxed opacity-90 font-medium">
+          
+          {/* Readiness Quote */}
+          <p className="text-slate-200/90 text-lg md:text-xl italic max-w-xl mb-8 leading-relaxed font-medium">
             "Your path to a dream placement is {readinessValue}% complete. Stay consistent."
           </p>
+          
+          {/* Action Button */}
           <div className="flex gap-4">
-            <Button className="rounded-2xl h-14 px-12 text-lg font-bold bg-white text-primary hover:bg-white/90 shadow-2xl shadow-black/20 transition-all hover:scale-105 active:scale-95">
+            <Button className="rounded-xl h-11 px-8 text-sm font-bold bg-white text-primary hover:bg-white/95 shadow-xl transition-all hover:scale-[1.02] active:scale-95">
               Resume Plan
             </Button>
           </div>
