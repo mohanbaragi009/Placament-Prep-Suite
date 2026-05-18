@@ -12,7 +12,7 @@ import {
   PolarRadiusAxis, 
   Radar 
 } from "recharts";
-import { Play, Calendar, CheckCircle2, ChevronRight } from "lucide-react";
+import { Play, Calendar, CheckCircle2, ChevronRight, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const radarData = [
@@ -24,9 +24,27 @@ const radarData = [
 ];
 
 const upcomingAssessments = [
-  { title: "DSA Mock Test", time: "Tomorrow, 10:00 AM", icon: "📝" },
-  { title: "System Design Review", time: "Wed, 2:00 PM", icon: "🏗️" },
-  { title: "HR Interview Prep", time: "Friday, 11:00 AM", icon: "🤝" },
+  { 
+    title: "DSA Mock Test", 
+    time: "LIVE NOW", 
+    icon: "📝", 
+    url: "https://leetcode.com/contest/",
+    isLive: true 
+  },
+  { 
+    title: "System Design Review", 
+    time: "Wed, 2:00 PM", 
+    icon: "🏗️", 
+    url: "https://takeuforward.org/system-design-blueprint-roadmap-for-interviews/",
+    isLive: false 
+  },
+  { 
+    title: "HR Interview Prep", 
+    time: "Friday, 11:00 AM", 
+    icon: "🤝", 
+    url: "https://takeuforward.org/interviews/behavioral-interview-questions-most-asked/",
+    isLive: false 
+  },
 ];
 
 export default function Dashboard() {
@@ -55,7 +73,7 @@ export default function Dashboard() {
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Card className="glass overflow-hidden flex flex-col justify-center border-none">
+        <Card className="glass overflow-hidden flex flex-col justify-center border-none shadow-2xl">
           <CardHeader>
             <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Overall Readiness</CardTitle>
           </CardHeader>
@@ -98,7 +116,7 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        <Card className="glass border-none">
+        <Card className="glass border-none shadow-2xl">
           <CardHeader>
             <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Skill Breakdown</CardTitle>
           </CardHeader>
@@ -124,7 +142,7 @@ export default function Dashboard() {
         </Card>
 
         <div className="space-y-8">
-          <Card className="glass group overflow-hidden border-none">
+          <Card className="glass group overflow-hidden border-none shadow-xl">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Continue Practice</CardTitle>
             </CardHeader>
@@ -151,7 +169,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="glass border-none">
+          <Card className="glass border-none shadow-xl">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Weekly Goals</CardTitle>
             </CardHeader>
@@ -180,27 +198,46 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        <Card className="glass border-none">
+        <Card className="glass border-none shadow-2xl">
           <CardHeader>
             <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Upcoming Assessments</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {upcomingAssessments.map((item, i) => (
-              <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-white/50 border border-slate-100 hover:bg-white hover:border-primary/20 transition-all cursor-pointer group shadow-sm">
+              <a 
+                key={i} 
+                href={item.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-4 rounded-xl bg-white/50 border border-slate-100 hover:bg-white hover:border-primary/20 transition-all cursor-pointer group shadow-sm"
+              >
                 <div className="flex items-center gap-4">
                   <div className="text-2xl w-10 h-10 flex items-center justify-center bg-slate-50 rounded-lg group-hover:scale-110 transition-transform">
                     {item.icon}
                   </div>
                   <div>
-                    <h4 className="font-bold text-sm group-hover:text-primary transition-colors">{item.title}</h4>
-                    <div className="flex items-center gap-2 text-muted-foreground text-[10px] font-bold uppercase tracking-wider">
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-bold text-sm group-hover:text-primary transition-colors">{item.title}</h4>
+                      {item.isLive && (
+                        <span className="flex h-2 w-2 rounded-full bg-red-500 animate-pulse" />
+                      )}
+                    </div>
+                    <div className={cn(
+                      "flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider",
+                      item.isLive ? "text-red-500" : "text-muted-foreground"
+                    )}>
                       <Calendar className="h-3 w-3" />
                       {item.time}
                     </div>
                   </div>
                 </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-              </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                    Join Live
+                  </span>
+                  <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                </div>
+              </a>
             ))}
             <Button variant="ghost" className="w-full text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-primary">
               View All Schedule
