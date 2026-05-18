@@ -12,7 +12,7 @@ import {
   PolarRadiusAxis, 
   Radar 
 } from "recharts";
-import { Play, Calendar, CheckCircle2, ChevronRight, Timer } from "lucide-react";
+import { Play, Calendar, CheckCircle2, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const radarData = [
@@ -35,12 +35,10 @@ export default function Dashboard() {
   const radius = 45;
   const circumference = 2 * Math.PI * radius;
   
-  // Use state for the offset to handle hydration and animation trigger
   const [offset, setOffset] = useState(circumference);
 
   useEffect(() => {
     setMounted(true);
-    // Trigger animation after mount
     const timer = setTimeout(() => {
       setOffset(circumference - (readinessValue / 100) * circumference);
     }, 100);
