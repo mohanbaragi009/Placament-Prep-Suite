@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState } from 'react';
@@ -6,26 +7,58 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Sparkles, Loader2, Building2, Briefcase } from "lucide-react";
-import { analyzeJD } from "@/lib/analysis-engine";
+import { Sparkles, Loader2, Building2, Briefcase, AlertCircle } from "lucide-react";
+import { analyzeJobDescription } from "@/ai/flows/jd-analysis-flow";
 import { Storage } from "@/lib/storage";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AnalyzePage() {
   const router = useRouter();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ company: '', role: '', jd: '' });
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
     if (!form.jd) return;
     setLoading(true);
     
-    // Simulate thinking
-    setTimeout(() => {
-      const result = analyzeJD(form.company, form.role, form.jd);
-      Storage.saveAnalysis(result);
+    try {
+      // Call real Genkit AI flow
+      const result = await analyzeJobDescription({
+        company: form.company,
+        role: form.role,
+        jdText: form.jd
+      });
+
+      // Prepare final result object for storage
+      const analysisResult = {
+        ...result,
+        id: crypto.randomUUID(),
+        createdAt: new Date().toISOString(),
+        company: form.company,
+        role: form.role,
+        jdText: form.jd,
+        baseScore: result.readinessScore,
+        skillConfidenceMap: Object.values(result.extractedSkills).flat().reduce((acc, skill) => ({
+          ...acc,
+          [skill]: 'practice'
+        }), {})
+      };
+
+      // Save to local storage (temporary until Firebase Project ID is provided)
+      Storage.saveAnalysis(analysisResult as any);
+      
       setLoading(false);
-      router.push(`/dashboard/results?id=${result.id}`);
-    }, 1500);
+      router.push(`/dashboard/results?id=${analysisResult.id}`);
+    } catch (error) {
+      console.error("Analysis Error:", error);
+      setLoading(false);
+      toast({
+        variant: "destructive",
+        title: "Analysis Failed",
+        description: "The AI was unable to process this job description. Please try again.",
+      });
+    }
   };
 
   return (
@@ -86,7 +119,7 @@ export default function AnalyzePage() {
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Processing Requirements...
+                AI is thinking...
               </>
             ) : (
               <>
@@ -95,6 +128,13 @@ export default function AnalyzePage() {
               </>
             )}
           </Button>
+
+          <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 flex items-start gap-3">
+            <AlertCircle className="h-4 w-4 text-primary mt-0.5" />
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              Our AI analyzes the JD to extract specific skills, predict interview rounds, and generate a tailored study plan. Results are saved to your dashboard.
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>

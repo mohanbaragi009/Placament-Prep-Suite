@@ -1,0 +1,35 @@
+
+{
+  "entities": {
+    "JobAnalysis": {
+      "title": "Job Analysis",
+      "description": "Result of an AI job description analysis",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "company": { "type": "string" },
+        "role": { "type": "string" },
+        "jdText": { "type": "string" },
+        "extractedSkills": { "type": "object" },
+        "plan": { "type": "array" },
+        "checklist": { "type": "array" },
+        "questions": { "type": "array" },
+        "readinessScore": { "type": "number" },
+        "baseScore": { "type": "number" },
+        "skillConfidenceMap": { "type": "object" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "company", "role", "jdText", "userId"]
+    }
+  },
+  "auth": {
+    "providers": ["google.com"]
+  },
+  "firestore": {
+    "/users/{userId}/analyses/{analysisId}": {
+      "schema": "JobAnalysis",
+      "description": "User's saved job analyses"
+    }
+  }
+}
