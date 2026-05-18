@@ -11,12 +11,16 @@ import {
   User, 
   Settings,
   LogOut,
-  ChevronRight
+  ChevronRight,
+  Sparkles,
+  History
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
+  { label: 'AI Analyze', icon: Sparkles, href: '/dashboard/analyze' },
+  { label: 'History', icon: History, href: '/dashboard/history' },
   { label: 'Practice', icon: Code2, href: '/dashboard/practice' },
   { label: 'Assessments', icon: FileText, href: '/dashboard/assessments' },
   { label: 'Resources', icon: BookOpen, href: '/dashboard/resources' },
@@ -52,7 +56,7 @@ export function Sidebar() {
               >
                 <div className="flex items-center gap-3">
                   <item.icon className={cn("h-5 w-5", isActive ? "text-white" : "text-muted-foreground group-hover:text-primary transition-colors")} />
-                  <span className="font-medium">{item.label}</span>
+                  <span className="font-medium text-sm">{item.label}</span>
                 </div>
                 {isActive && <ChevronRight className="h-4 w-4" />}
               </Link>
@@ -67,14 +71,14 @@ export function Sidebar() {
           className="flex items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground hover:bg-white/5 hover:text-foreground transition-all"
         >
           <Settings className="h-5 w-5" />
-          <span className="font-medium">Settings</span>
+          <span className="font-medium text-sm">Settings</span>
         </Link>
         <Link 
           href="/"
           className="flex items-center gap-3 px-4 py-3 rounded-xl text-destructive hover:bg-destructive/10 transition-all"
         >
           <LogOut className="h-5 w-5" />
-          <span className="font-medium">Logout</span>
+          <span className="font-medium text-sm">Logout</span>
         </Link>
       </div>
     </aside>
