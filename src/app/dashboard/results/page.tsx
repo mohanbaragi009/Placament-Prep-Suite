@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useEffect, useState, useCallback } from 'react';
@@ -12,7 +13,6 @@ import {
   Download,
   Sparkles,
   Zap,
-  Copy,
   Info
 } from "lucide-react";
 import Link from 'next/link';
@@ -39,11 +39,11 @@ export default function ResultsPage() {
   const toggleSkillConfidence = useCallback((skill: string) => {
     if (!data) return;
 
-    const currentStatus = data.skillConfidenceMap[skill] || 'practice';
+    const currentStatus = data.skillConfidenceMap?.[skill] || 'practice';
     const newStatus = currentStatus === 'know' ? 'practice' : 'know';
 
     const updatedConfidenceMap = {
-      ...data.skillConfidenceMap,
+      ...(data.skillConfidenceMap || {}),
       [skill]: newStatus
     };
 
@@ -60,14 +60,6 @@ export default function ResultsPage() {
     Storage.updateAnalysis(updatedData);
   }, [data]);
 
-  const copySection = (title: string, content: string) => {
-    navigator.clipboard.writeText(content);
-    toast({
-      title: "Copied to clipboard",
-      description: `${title} has been copied.`
-    });
-  };
-
   const downloadTxt = () => {
     if (!data) return;
 
@@ -77,13 +69,13 @@ Date: ${new Date(data.createdAt).toLocaleDateString()}
 Final Readiness Score: ${data.finalScore}%
 
 7-DAY INTENSIVE PLAN:
-${data.plan7Days.map(p => `${p.day} (${p.focus}): ${p.tasks.join(', ')}`).join('\n')}
+${(data.plan7Days || []).map(p => `${p.day} (${p.focus}): ${p.tasks.join(', ')}`).join('\n')}
 
 ROUND-WISE CHECKLIST:
-${data.checklist.map(c => `[${c.roundTitle}]\n${c.items.map(i => `- ${i}`).join('\n')}`).join('\n\n')}
+${(data.checklist || []).map(c => `[${c.roundTitle}]\n${c.items.map(i => `- ${i}`).join('\n')}`).join('\n\n')}
 
 TOP 10 POTENTIAL QUESTIONS:
-${data.questions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
+${(data.questions || []).map((q, i) => `${i + 1}. ${q}`).join('\n')}
     `.trim();
 
     const blob = new Blob([content], { type: 'text/plain' });
@@ -103,7 +95,7 @@ ${data.questions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
     </div>
   );
 
-  const weakSkills = Object.keys(data.skillConfidenceMap).filter(s => data.skillConfidenceMap[s] === 'practice').slice(0, 3);
+  const weakSkills = Object.keys(data.skillConfidenceMap || {}).filter(s => data.skillConfidenceMap[s] === 'practice').slice(0, 3);
 
   return (
     <div className="space-y-10 animate-in fade-in duration-500 pb-20">
@@ -152,13 +144,13 @@ ${data.questions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
           <Card className="glass border-white/10">
             <CardHeader><CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Extracted Skills</CardTitle></CardHeader>
             <CardContent className="space-y-6">
-              {Object.entries(data.extractedSkills).map(([cat, skills]) => (
-                skills.length > 0 && (
+              {Object.entries(data.extractedSkills || {}).map(([cat, skills]) => (
+                Array.isArray(skills) && skills.length > 0 && (
                   <div key={cat}>
                     <h4 className="text-[10px] font-bold text-primary mb-2 uppercase tracking-wider">{cat}</h4>
                     <div className="flex flex-wrap gap-2">
                       {skills.map(s => {
-                        const isKnown = data.skillConfidenceMap[s] === 'know';
+                        const isKnown = data.skillConfidenceMap?.[s] === 'know';
                         return (
                           <button key={s} onClick={() => toggleSkillConfidence(s)} className={cn("text-xs px-3 py-1.5 rounded-lg border transition-all flex items-center gap-2", isKnown ? "bg-primary/20 border-primary text-primary" : "bg-white/5 border-white/10 text-muted-foreground")}>
                             {isKnown ? <CheckCircle2 className="h-3 w-3" /> : <Zap className="h-3 w-3" />}
@@ -180,7 +172,7 @@ ${data.questions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
               <CardTitle className="flex items-center gap-2 text-xl"><Calendar className="h-5 w-5 text-primary" /> 7-Day Plan</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {data.plan7Days.map((p, idx) => (
+              {(data.plan7Days || []).map((p, idx) => (
                 <div key={idx} className="flex items-start gap-4 p-4 rounded-xl glass border-white/5">
                   <div className="bg-primary/10 text-primary font-bold text-xs px-3 py-1 rounded-lg shrink-0">{p.day}</div>
                   <div>
@@ -195,7 +187,7 @@ ${data.questions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
           <Card className="glass border-white/10">
             <CardHeader><CardTitle className="flex items-center gap-2 text-xl"><CheckCircle2 className="h-5 w-5 text-primary" /> Round-wise Action</CardTitle></CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {data.checklist.map((round, idx) => (
+              {(data.checklist || []).map((round, idx) => (
                 <div key={idx} className="space-y-4">
                   <h4 className="font-bold text-primary border-b border-primary/10 pb-2">{round.roundTitle}</h4>
                   <ul className="space-y-2">
@@ -211,7 +203,7 @@ ${data.questions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
           <Card className="glass border-white/10">
             <CardHeader><CardTitle className="flex items-center gap-2 text-xl"><HelpCircle className="h-5 w-5 text-primary" /> Predicted Questions</CardTitle></CardHeader>
             <CardContent className="space-y-4">
-              {data.questions.map((q, idx) => (
+              {(data.questions || []).map((q, idx) => (
                 <div key={idx} className="flex gap-4 p-4 rounded-xl border border-white/5 hover:border-primary/20 transition-all">
                   <span className="text-primary font-bold">{idx + 1}.</span>
                   <p className="text-sm font-medium">{q}</p>

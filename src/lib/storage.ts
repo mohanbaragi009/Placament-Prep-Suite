@@ -1,3 +1,4 @@
+
 import { AnalysisResult } from './analysis-engine';
 
 const STORAGE_KEY = 'placement_prep_history';
@@ -31,8 +32,17 @@ export const Storage = {
       
       // Filter out corrupted entries missing vital fields
       return parsed.filter(item => {
-        const isValid = item && item.id && item.extractedSkills && item.checklist;
-        if (!isValid) console.warn("Skipping corrupted history entry:", item?.id);
+        const isValid = 
+          item && 
+          item.id && 
+          item.extractedSkills && 
+          item.checklist && 
+          item.plan7Days && // Ensure the 7-day plan exists
+          Array.isArray(item.plan7Days) &&
+          Array.isArray(item.checklist) &&
+          Array.isArray(item.questions);
+          
+        if (!isValid) console.warn("Skipping corrupted or outdated history entry:", item?.id);
         return isValid;
       });
     } catch (e) {
