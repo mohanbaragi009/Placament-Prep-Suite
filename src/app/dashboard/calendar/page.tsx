@@ -1,7 +1,7 @@
 
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ interface Reminder {
 }
 
 export default function CalendarPage() {
+  const [mounted, setMounted] = useState(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [reminders, setReminders] = useState<Reminder[]>([
     { id: 1, title: "Mock Interview Prep", time: "10:00 AM", date: new Date(), status: "pending" },
@@ -27,6 +28,10 @@ export default function CalendarPage() {
     { id: 3, title: "System Design Revision", time: "05:00 PM", date: new Date(), status: "completed" },
   ]);
   const [newReminder, setNewReminder] = useState("");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const addReminder = () => {
     if (!newReminder.trim()) {
@@ -67,6 +72,20 @@ export default function CalendarPage() {
       description: "Reminder removed successfully.",
     });
   };
+
+  if (!mounted) {
+    return (
+      <div className="space-y-10">
+        <div>
+          <h1 className="text-4xl font-headline font-bold mb-2 tracking-tight">Study Schedule</h1>
+          <p className="text-muted-foreground italic">"Plan your work, then work your plan."</p>
+        </div>
+        <div className="h-96 w-full flex items-center justify-center bg-white/5 rounded-3xl animate-pulse">
+          <p className="text-muted-foreground">Loading Schedule...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-10 animate-in fade-in duration-500">
