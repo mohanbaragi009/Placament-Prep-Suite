@@ -5,7 +5,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/badge";
+import { Badge } from "@/components/ui/badge";
 import { Timer, AlertCircle, CheckCircle2 } from "lucide-react";
 
 export default function Assessments() {
