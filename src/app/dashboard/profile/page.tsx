@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Github, Linkedin, Twitter, Mail, Edit2, Loader2, Sparkles, Plus, X } from "lucide-react";
+import { Github, Linkedin, Twitter, Mail, Edit2, Loader2, Sparkles, Plus, X, Camera } from "lucide-react";
 import { useUser, useFirebase, useDoc } from "@/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
@@ -24,6 +24,7 @@ interface ProfileData {
   linkedin?: string;
   twitter?: string;
   email?: string;
+  photoData?: string;
 }
 
 export default function Profile() {
@@ -48,7 +49,8 @@ export default function Profile() {
     github: '',
     linkedin: '',
     twitter: '',
-    email: ''
+    email: '',
+    photoData: ''
   });
 
   const [newSkill, setNewSkill] = useState('');
@@ -65,6 +67,25 @@ export default function Profile() {
     }
   }, [cloudProfile, user]);
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 1024 * 1024) {
+        toast({
+          variant: "destructive",
+          title: "File too large",
+          description: "Please choose an image smaller than 1MB.",
+        });
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData(prev => ({ ...prev, photoData: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSave = async () => {
     if (!user || !db) return;
     setSaving(true);
@@ -77,7 +98,7 @@ export default function Profile() {
       
       toast({
         title: "Profile Updated",
-        description: "Your profile changes have been saved to the cloud.",
+        description: "Your profile changes have been saved and are now visible.",
       });
       setIsEditing(false);
     } catch (error) {
@@ -126,7 +147,7 @@ export default function Profile() {
         <CardContent className="p-10 -mt-20">
           <div className="flex flex-col md:flex-row items-end gap-6 mb-10">
             <Avatar className="h-40 w-40 border-8 border-background p-1 bg-white/5 glass">
-              <AvatarImage src={user?.photoURL || `https://picsum.photos/seed/${user?.uid || 'user'}/400`} />
+              <AvatarImage src={profile.photoData || user?.photoURL || `https://picsum.photos/seed/${user?.uid || 'user'}/400`} />
               <AvatarFallback>{profile.displayName?.charAt(0) || 'U'}</AvatarFallback>
             </Avatar>
             <div className="flex-1 pb-4">
@@ -154,6 +175,24 @@ export default function Profile() {
                   </DialogTitle>
                 </DialogHeader>
                 <div className="grid gap-6 py-4">
+                  <div className="space-y-4">
+                    <Label className="flex items-center gap-2"><Camera className="h-4 w-4" /> Profile Image</Label>
+                    <div className="flex items-center gap-6">
+                      <Avatar className="h-20 w-20 border-2 border-primary/20">
+                        <AvatarImage src={formData.photoData || user?.photoURL || `https://picsum.photos/seed/p/200`} />
+                      </Avatar>
+                      <div className="flex-1">
+                        <Input 
+                          type="file" 
+                          accept="image/*" 
+                          onChange={handleImageUpload}
+                          className="cursor-pointer h-10"
+                        />
+                        <p className="text-[10px] text-muted-foreground mt-1.5 italic">Recommended: Square image, max 1MB.</p>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Full Name</Label>
@@ -229,7 +268,7 @@ export default function Profile() {
                 </div>
                 <DialogFooter>
                   <Button variant="ghost" onClick={() => setIsEditing(false)}>Cancel</Button>
-                  <Button onClick={handleSave} disabled={saving}>
+                  <Button onClick={handleSave} disabled={saving} className="bg-primary hover:bg-primary/90">
                     {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Save Changes
                   </Button>
