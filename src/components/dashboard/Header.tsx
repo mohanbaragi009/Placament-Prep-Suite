@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useMemo, useState } from 'react';
-import { Search, Bell, Menu } from "lucide-react";
+import React, { useMemo, useState, useEffect } from 'react';
+import { Search, Bell, Menu, Sparkles, Moon, Sun } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,11 +9,27 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useUser, useFirebase, useDoc } from "@/firebase";
 import { doc } from "firebase/firestore";
+import { cn } from "@/lib/utils";
 
 export function Header() {
-  const { user } = userUser();
+  const { user } = useUser();
   const { db } = useFirebase();
-  const [isPinkMode, setIsPinkMode] = useState(false);
+  const [isPurpleMode, setIsPurpleMode] = useState(false);
+
+  // Initialize theme from document class
+  useEffect(() => {
+    const isPurple = document.documentElement.classList.contains('purple-black');
+    setIsPurpleMode(isPurple);
+  }, []);
+
+  const toggleTheme = (checked: boolean) => {
+    setIsPurpleMode(checked);
+    if (checked) {
+      document.documentElement.classList.add('purple-black');
+    } else {
+      document.documentElement.classList.remove('purple-black');
+    }
+  };
 
   const profileRef = useMemo(() => {
     if (!user || !db) return null;
@@ -31,7 +47,7 @@ export function Header() {
         <Button variant="ghost" size="icon" className="md:hidden glass-button rounded-xl">
           <Menu className="h-6 w-6" />
         </Button>
-        <div className="relative max-w-md w-full hidden sm:flex items-center gap-4">
+        <div className="relative max-w-md w-full hidden sm:flex items-center gap-6">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input 
@@ -40,19 +56,37 @@ export function Header() {
             />
           </div>
           
-          {/* Custom Dark Pink & White Toggle */}
-          <div className="flex items-center gap-3 px-3 py-2 rounded-2xl bg-white/10 border border-white/20">
-            <Switch 
-              id="header-toggle"
-              checked={isPinkMode}
-              onCheckedChange={setIsPinkMode}
-              className="data-[state=checked]:bg-[#DB2777] data-[state=unchecked]:bg-white border-white/40 shadow-sm"
-            />
+          {/* Enhanced Glass Theme Toggle */}
+          <div className={cn(
+            "flex items-center gap-3 px-4 py-2 rounded-full transition-all duration-500",
+            "bg-white/10 backdrop-blur-xl border border-white/20 shadow-lg",
+            isPurpleMode ? "border-primary/50 bg-primary/5" : "hover:bg-white/20"
+          )}>
+            <div className="flex items-center gap-2">
+              {isPurpleMode ? (
+                <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
+              ) : (
+                <Sun className="h-3.5 w-3.5 text-orange-400" />
+              )}
+              <Switch 
+                id="theme-toggle"
+                checked={isPurpleMode}
+                onCheckedChange={toggleTheme}
+                className={cn(
+                  "data-[state=checked]:bg-primary data-[state=unchecked]:bg-slate-200",
+                  "border-white/20 shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] h-5 w-10"
+                )}
+              />
+              {isPurpleMode && <Moon className="h-3.5 w-3.5 text-primary-foreground/50" />}
+            </div>
             <Label 
-              htmlFor="header-toggle" 
-              className="text-[10px] font-black uppercase tracking-[0.15em] text-muted-foreground select-none cursor-pointer hidden lg:block"
+              htmlFor="theme-toggle" 
+              className={cn(
+                "text-[10px] font-black uppercase tracking-[0.15em] select-none cursor-pointer hidden lg:block",
+                isPurpleMode ? "text-primary" : "text-muted-foreground"
+              )}
             >
-              {isPinkMode ? 'Pink' : 'White'}
+              {isPurpleMode ? 'PurpleBlack' : 'White'}
             </Label>
           </div>
         </div>
@@ -61,7 +95,10 @@ export function Header() {
       <div className="flex items-center gap-6">
         <Button variant="ghost" size="icon" className="relative border-white/40 rounded-2xl glass-button h-11 w-11">
           <Bell className="h-5 w-5" />
-          <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-[#DB2777] rounded-full ring-2 ring-white/50" />
+          <span className={cn(
+            "absolute top-2.5 right-2.5 w-2.5 h-2.5 rounded-full ring-2 ring-white/50",
+            isPurpleMode ? "bg-primary animate-pulse" : "bg-red-500"
+          )} />
         </Button>
         
         <div className="flex items-center gap-3">
@@ -77,9 +114,4 @@ export function Header() {
       </div>
     </header>
   );
-}
-
-function userUser() {
-  const { user, loading } = useUser();
-  return { user, loading };
 }
