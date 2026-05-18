@@ -8,6 +8,15 @@ export const Storage = {
     localStorage.setItem(STORAGE_KEY, JSON.stringify([result, ...history]));
   },
 
+  updateAnalysis: (updatedResult: AnalysisResult) => {
+    const history = Storage.getHistory();
+    const index = history.findIndex(h => h.id === updatedResult.id);
+    if (index !== -1) {
+      history[index] = updatedResult;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+    }
+  },
+
   getHistory: (): AnalysisResult[] => {
     if (typeof window === 'undefined') return [];
     const raw = localStorage.getItem(STORAGE_KEY);

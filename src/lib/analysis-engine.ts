@@ -22,6 +22,8 @@ export interface AnalysisResult {
   checklist: { round: string; items: string[] }[];
   questions: string[];
   readinessScore: number;
+  baseScore: number;
+  skillConfidenceMap: Record<string, 'know' | 'practice'>;
 }
 
 const QUESTION_BANK: Record<string, string[]> = {
@@ -52,6 +54,12 @@ export function analyzeJD(company: string, role: string, jdText: string): Analys
   if (Object.keys(detectedSkills).length === 0) {
     detectedSkills['General'] = ['General Fresher Stack', 'Problem Solving', 'Aptitude'];
   }
+
+  // Initial confidence map (default to 'practice')
+  const skillConfidenceMap: Record<string, 'know' | 'practice'> = {};
+  Object.values(detectedSkills).flat().forEach(skill => {
+    skillConfidenceMap[skill] = 'practice';
+  });
 
   // Score Calculation
   let score = 35;
@@ -87,7 +95,6 @@ export function analyzeJD(company: string, role: string, jdText: string): Analys
     }
   });
   
-  // Fill with defaults if not enough
   const defaultQs = ["Describe a difficult technical challenge you solved.", "How do you keep your technical skills up to date?", "Explain your most significant project."];
   while (questions.length < 10) {
     const q = defaultQs[questions.length % defaultQs.length];
@@ -105,6 +112,17 @@ export function analyzeJD(company: string, role: string, jdText: string): Analys
     plan,
     checklist,
     questions: questions.slice(0, 10),
-    readinessScore: score
+    readinessScore: score,
+    baseScore: score,
+    skillConfidenceMap
   };
+}
+
+export function calculateLiveScore(baseScore: number, confidenceMap: Record<string, 'know' | 'practice'>): number {
+  let adjustment = 0;
+  Object.values(confidenceMap).forEach(status => {
+    if (status === 'know') adjustment += 2;
+    if (status === 'practice') adjustment -= 2;
+  });
+  return Math.max(0, Math.min(100, baseScore + adjustment));
 }
