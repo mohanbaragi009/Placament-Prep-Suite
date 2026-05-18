@@ -6,14 +6,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Sparkles, Loader2, Building2, Briefcase, AlertCircle, AlertTriangle } from "lucide-react";
+import { Sparkles, Loader2, Building2, Briefcase, AlertTriangle } from "lucide-react";
 import { analyzeJobDescription } from "@/ai/flows/jd-analysis-flow";
-import { Storage } from "@/lib/storage";
 import { useToast } from "@/hooks/use-toast";
+import { useFirestore, useUser } from "@/firebase";
+import { doc, setDoc, collection, serverTimestamp } from "firebase/firestore";
 
 export default function AnalyzePage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { db } = useFirestore();
+  const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ company: '', role: '', jd: '' });
 
@@ -38,9 +41,13 @@ export default function AnalyzePage() {
         jdText: form.jd
       });
 
+      const analysisId = crypto.randomUUID();
+      const userId = user?.uid || "anonymous";
+
       const finalAnalysis = {
         ...result,
-        id: crypto.randomUUID(),
+        id: analysisId,
+        userId,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         company: form.company || "",
@@ -53,8 +60,20 @@ export default function AnalyzePage() {
         finalScore: result.baseScore
       };
 
-      Storage.saveAnalysis(finalAnalysis as any);
-      router.push(`/dashboard/results?id=${finalAnalysis.id}`);
+      // Save to Cloud if authenticated, otherwise fallback to local for now
+      if (user) {
+        const analysisRef = doc(db, "users", user.uid, "analyses", analysisId);
+        setDoc(analysisRef, {
+          ...finalAnalysis,
+          timestamp: serverTimestamp()
+        });
+      }
+
+      // Always save to localStorage for immediate history access (hybrid approach)
+      const existing = JSON.parse(localStorage.getItem('placement_prep_history') || '[]');
+      localStorage.setItem('placement_prep_history', JSON.stringify([finalAnalysis, ...existing]));
+
+      router.push(`/dashboard/results?id=${analysisId}`);
     } catch (error) {
       setLoading(false);
       toast({
@@ -80,6 +99,13 @@ export default function AnalyzePage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
+          {!user && (
+            <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 text-xs text-primary font-medium flex items-center gap-2">
+              <Sparkles className="h-4 w-4" />
+              Sign in to sync your analyses across all your devices.
+            </div>
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">

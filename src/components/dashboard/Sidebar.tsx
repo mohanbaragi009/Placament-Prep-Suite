@@ -13,9 +13,13 @@ import {
   LogOut,
   ChevronRight,
   Sparkles,
-  History
+  History,
+  LogIn
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useUser, useAuth } from "@/firebase";
+import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { Button } from "@/components/ui/button";
 
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
@@ -29,6 +33,17 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { user } = useUser();
+  const auth = useAuth();
+
+  const handleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+  };
+
+  const handleLogout = async () => {
+    await signOut(auth);
+  };
 
   return (
     <aside className="w-64 glass border-r border-white/10 hidden md:flex flex-col h-screen sticky top-0">
@@ -65,21 +80,33 @@ export function Sidebar() {
         </nav>
       </div>
 
-      <div className="mt-auto p-6 space-y-2">
-        <Link 
-          href="/dashboard/settings"
-          className="flex items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground hover:bg-white/5 hover:text-foreground transition-all"
-        >
-          <Settings className="h-5 w-5" />
-          <span className="font-medium text-sm">Settings</span>
-        </Link>
-        <Link 
-          href="/"
-          className="flex items-center gap-3 px-4 py-3 rounded-xl text-destructive hover:bg-destructive/10 transition-all"
-        >
-          <LogOut className="h-5 w-5" />
-          <span className="font-medium text-sm">Logout</span>
-        </Link>
+      <div className="mt-auto p-6 space-y-4">
+        {!user ? (
+          <Button 
+            onClick={handleLogin}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/20 text-primary hover:bg-primary hover:text-white transition-all border border-primary/20"
+          >
+            <LogIn className="h-5 w-5" />
+            <span className="font-medium text-sm">Sign In</span>
+          </Button>
+        ) : (
+          <div className="space-y-2">
+            <Link 
+              href="/dashboard/settings"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground hover:bg-white/5 hover:text-foreground transition-all"
+            >
+              <Settings className="h-5 w-5" />
+              <span className="font-medium text-sm">Settings</span>
+            </Link>
+            <button 
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-destructive hover:bg-destructive/10 transition-all text-left"
+            >
+              <LogOut className="h-5 w-5" />
+              <span className="font-medium text-sm">Logout</span>
+            </button>
+          </div>
+        )}
       </div>
     </aside>
   );
