@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState, useEffect } from 'react';
@@ -105,31 +106,32 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
-      {/* Hero Welcome Section */}
-      <section className="relative h-64 md:h-80 w-full rounded-[2.5rem] overflow-hidden shadow-2xl group border-4 border-white/30">
+      {/* Hero Welcome Section - Updated to match design */}
+      <section className="relative h-[400px] w-full rounded-[3rem] overflow-hidden shadow-2xl group border border-white/20">
         {heroImage && (
           <Image
             src={heroImage.imageUrl}
             alt={heroImage.description}
             fill
-            className="object-cover transition-transform duration-1000 group-hover:scale-110"
+            className="object-cover transition-transform duration-1000 group-hover:scale-105"
             data-ai-hint={heroImage.imageHint}
             priority
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/60 via-slate-900/20 to-transparent flex flex-col justify-center p-8 md:p-16 backdrop-blur-[2px]">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/30 backdrop-blur-xl border border-white/20 w-fit mb-6">
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/80 via-slate-900/40 to-transparent flex flex-col justify-center p-12 md:p-20 backdrop-blur-[1px]">
+          <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-primary/40 backdrop-blur-2xl border border-white/20 w-fit mb-8 shadow-xl">
             <Sparkles className="h-4 w-4 text-white" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white">Placement Readiness</span>
+            <span className="text-[11px] font-black uppercase tracking-[0.25em] text-white">Placement Readiness</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-headline font-bold text-white mb-3 tracking-tight">
-            Welcome back, {displayName}
+          <h1 className="text-5xl md:text-8xl font-headline font-bold text-white mb-4 tracking-tight leading-tight">
+            Welcome back, <br />
+            {displayName}
           </h1>
-          <p className="text-slate-100 text-sm md:text-xl italic max-w-xl mb-8 leading-relaxed opacity-90">
-            "Your path to a dream placement is 72% complete. Stay consistent."
+          <p className="text-slate-100 text-lg md:text-2xl italic max-w-2xl mb-12 leading-relaxed opacity-90 font-medium">
+            "Your path to a dream placement is {readinessValue}% complete. Stay consistent."
           </p>
           <div className="flex gap-4">
-            <Button className="rounded-2xl h-12 px-10 font-bold bg-white text-primary hover:bg-white/90 shadow-xl shadow-black/10 transition-all hover:scale-105">
+            <Button className="rounded-2xl h-14 px-12 text-lg font-bold bg-white text-primary hover:bg-white/90 shadow-2xl shadow-black/20 transition-all hover:scale-105 active:scale-95">
               Resume Plan
             </Button>
           </div>
