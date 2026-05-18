@@ -1,9 +1,10 @@
+
 "use client"
 
 import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { BookOpen, ExternalLink, Download, Loader2, Sparkles, X, ChevronRight } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { fetchTopicDetails, FetchTopicDetailsOutput } from "@/ai/flows/fetch-topic-details";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -86,11 +87,11 @@ export default function Resources() {
         {RESOURCES_LIST.map((res, i) => (
           <Card 
             key={i} 
-            className="glass-card border-white/10 group cursor-pointer overflow-hidden relative"
+            className="glass-card border-white/10 group cursor-pointer overflow-hidden relative shadow-lg hover:shadow-2xl transition-all hover:scale-[1.02]"
             onClick={() => handleTopicClick(res.title, res.externalUrl)}
           >
             <CardContent className="p-8">
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-inner">
                 <BookOpen className="text-primary h-6 w-6" />
               </div>
               <p className="text-[10px] font-bold text-primary uppercase tracking-[0.2em] mb-2">{res.cat}</p>
@@ -123,12 +124,17 @@ export default function Resources() {
 
       <Dialog open={!!details} onOpenChange={(open) => !open && setDetails(null)}>
         <DialogContent className="max-w-3xl glass border-white/10 shadow-2xl p-0 overflow-hidden max-h-[90vh]">
+          <DialogHeader className="sr-only">
+            <DialogTitle>{details?.title || 'Resource Details'}</DialogTitle>
+            <DialogDescription>{details?.summary || 'Detailed study material for the selected technical topic.'}</DialogDescription>
+          </DialogHeader>
+          
           {details && (
             <div className="flex flex-col h-full">
               <div className="p-8 bg-gradient-to-br from-primary/20 to-purple-500/10 border-b border-white/10 relative">
                 <button 
                   onClick={() => setDetails(null)}
-                  className="absolute right-4 top-4 p-2 hover:bg-white/10 rounded-full transition-colors"
+                  className="absolute right-4 top-4 p-2 hover:bg-white/10 rounded-full transition-colors z-10"
                 >
                   <X className="h-5 w-5" />
                 </button>
