@@ -1,7 +1,11 @@
+
+"use client"
+
 import React from 'react';
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/badge";
 import { Timer, AlertCircle, CheckCircle2 } from "lucide-react";
 
 export default function Assessments() {
@@ -29,8 +33,12 @@ export default function Assessments() {
           <CardContent className="space-y-6">
             <p className="text-muted-foreground">Compete with 5,000+ developers worldwide. 3 Algorithmic problems, 90 minutes. Top performers get priority access to hiring partners.</p>
             <div className="flex gap-4">
-              <Button className="flex-1 h-12 rounded-xl bg-primary text-white font-bold">Register Now</Button>
-              <Button variant="outline" className="glass border-white/10 rounded-xl h-12">Set Reminder</Button>
+              <Link href="/dashboard/assessments/register" className="flex-1">
+                <Button className="w-full h-12 rounded-xl bg-primary text-white font-bold">Register Now</Button>
+              </Link>
+              <Link href="/dashboard/calendar" className="flex-1">
+                <Button variant="outline" className="w-full glass border-white/10 rounded-xl h-12">Set Reminder</Button>
+              </Link>
             </div>
           </CardContent>
         </Card>

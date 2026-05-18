@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,6 @@ export default function Profile() {
             <div className="flex-1 pb-4">
               <div className="flex items-center gap-3 mb-2">
                 <h1 className="text-4xl font-headline font-bold">John Doe</h1>
-                <Badge className="bg-primary/20 text-primary hover:bg-primary/30">Lvl 42</Badge>
               </div>
               <p className="text-muted-foreground flex items-center gap-2">
                 Aspiring Software Engineer @ University of Technology

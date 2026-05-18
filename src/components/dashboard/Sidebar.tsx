@@ -1,3 +1,4 @@
+
 "use client"
 
 import React from 'react';
@@ -14,7 +15,8 @@ import {
   ChevronRight,
   Sparkles,
   History,
-  LogIn
+  LogIn,
+  Calendar as CalendarIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUser, useAuth } from "@/firebase";
@@ -27,6 +29,7 @@ const navItems = [
   { label: 'History', icon: History, href: '/dashboard/history' },
   { label: 'Practice', icon: Code2, href: '/dashboard/practice' },
   { label: 'Assessments', icon: FileText, href: '/dashboard/assessments' },
+  { label: 'Calendar', icon: CalendarIcon, href: '/dashboard/calendar' },
   { label: 'Resources', icon: BookOpen, href: '/dashboard/resources' },
   { label: 'Profile', icon: User, href: '/dashboard/profile' },
 ];
