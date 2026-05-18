@@ -1,12 +1,27 @@
 "use client"
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Search, Bell, Menu } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useUser, useFirebase, useDoc } from "@/firebase";
+import { doc } from "firebase/firestore";
 
 export function Header() {
+  const { user } = useUser();
+  const { db } = useFirebase();
+
+  const profileRef = useMemo(() => {
+    if (!user || !db) return null;
+    return doc(db, "users", user.uid, "profile", "main");
+  }, [user, db]);
+
+  const { data: profile } = useDoc<any>(profileRef as any);
+
+  const displayName = profile?.displayName || user?.displayName || 'Guest Candidate';
+  const photoUrl = profile?.photoData || user?.photoURL || `https://picsum.photos/seed/${user?.uid || 'guest'}/200`;
+
   return (
     <header className="h-20 glass border-b px-8 flex items-center justify-between sticky top-0 z-40">
       <div className="flex items-center gap-4 flex-1">
@@ -30,12 +45,12 @@ export function Header() {
         
         <div className="flex items-center gap-3">
           <div className="text-right hidden sm:block">
-            <p className="text-sm font-bold">John Doe</p>
+            <p className="text-sm font-bold line-clamp-1 max-w-[150px]">{displayName}</p>
             <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">Candidate</p>
           </div>
-          <Avatar className="h-10 w-10 border-2 border-primary/20 p-0.5">
-            <AvatarImage src="https://picsum.photos/seed/user1/200" />
-            <AvatarFallback>JD</AvatarFallback>
+          <Avatar className="h-10 w-10 border-2 border-primary/20 p-0.5 shadow-sm">
+            <AvatarImage src={photoUrl} />
+            <AvatarFallback>{displayName.charAt(0)}</AvatarFallback>
           </Avatar>
         </div>
       </div>
