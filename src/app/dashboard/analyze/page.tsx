@@ -60,7 +60,6 @@ export default function AnalyzePage() {
         finalScore: result.baseScore
       };
 
-      // Save to Cloud if authenticated, otherwise fallback to local for now
       if (user) {
         const analysisRef = doc(db, "users", user.uid, "analyses", analysisId);
         setDoc(analysisRef, {
@@ -69,7 +68,6 @@ export default function AnalyzePage() {
         });
       }
 
-      // Always save to localStorage for immediate history access (hybrid approach)
       const existing = JSON.parse(localStorage.getItem('placement_prep_history') || '[]');
       localStorage.setItem('placement_prep_history', JSON.stringify([finalAnalysis, ...existing]));
 
@@ -91,16 +89,16 @@ export default function AnalyzePage() {
         <p className="text-muted-foreground italic">"Give us the job description, we'll give you the strategy."</p>
       </div>
 
-      <Card className="glass border-white/10 shadow-2xl">
-        <CardHeader>
+      <Card className="glass shadow-2xl overflow-hidden">
+        <CardHeader className="bg-white/50 border-b border-slate-100">
           <CardTitle className="text-xl font-headline flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
             New Job Analysis
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="p-8 space-y-8">
           {!user && (
-            <div className="p-4 rounded-xl bg-primary/10 border border-primary/20 text-xs text-primary font-medium flex items-center gap-2">
+            <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 text-xs text-primary font-medium flex items-center gap-2">
               <Sparkles className="h-4 w-4" />
               Sign in to sync your analyses across all your devices.
             </div>
@@ -113,7 +111,7 @@ export default function AnalyzePage() {
               </label>
               <Input 
                 placeholder="e.g., Google" 
-                className="glass border-white/10 h-12 rounded-xl"
+                className="bg-white/50 border-slate-200 h-12 rounded-xl"
                 value={form.company}
                 onChange={e => setForm({...form, company: e.target.value})}
               />
@@ -124,7 +122,7 @@ export default function AnalyzePage() {
               </label>
               <Input 
                 placeholder="e.g., Frontend Engineer" 
-                className="glass border-white/10 h-12 rounded-xl"
+                className="bg-white/50 border-slate-200 h-12 rounded-xl"
                 value={form.role}
                 onChange={e => setForm({...form, role: e.target.value})}
               />
@@ -135,7 +133,7 @@ export default function AnalyzePage() {
             <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Job Description (Required)</label>
             <Textarea 
               placeholder="Paste the full job description here..." 
-              className="glass border-white/10 min-h-[300px] rounded-xl p-4 resize-none focus-visible:ring-primary/20"
+              className="bg-white/50 border-slate-200 min-h-[300px] rounded-xl p-4 resize-none focus-visible:ring-primary/20"
               value={form.jd}
               onChange={e => setForm({...form, jd: e.target.value})}
             />

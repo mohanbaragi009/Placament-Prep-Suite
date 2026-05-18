@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 
 export function Header() {
   return (
-    <header className="h-20 glass border-b border-white/10 px-8 flex items-center justify-between sticky top-0 z-40">
+    <header className="h-20 glass border-b px-8 flex items-center justify-between sticky top-0 z-40">
       <div className="flex items-center gap-4 flex-1">
         <Button variant="ghost" size="icon" className="md:hidden">
           <Menu className="h-6 w-6" />
@@ -17,13 +17,13 @@ export function Header() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input 
             placeholder="Search problems, topics..." 
-            className="pl-10 glass border-white/10 rounded-xl focus:ring-primary/20"
+            className="pl-10 border-slate-200 rounded-xl focus:ring-primary/20 bg-white/50"
           />
         </div>
       </div>
 
       <div className="flex items-center gap-6">
-        <Button variant="ghost" size="icon" className="relative glass border-white/10 rounded-xl">
+        <Button variant="ghost" size="icon" className="relative border-slate-200 rounded-xl hover:bg-slate-100">
           <Bell className="h-5 w-5" />
           <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full" />
         </Button>

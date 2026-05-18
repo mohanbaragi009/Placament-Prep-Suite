@@ -46,7 +46,7 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-64 glass border-r border-white/10 hidden md:flex flex-col h-screen sticky top-0">
+    <aside className="w-64 glass border-r hidden md:flex flex-col h-screen sticky top-0">
       <div className="p-6">
         <div className="flex items-center gap-3 mb-10">
           <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
@@ -66,7 +66,7 @@ export function Sidebar() {
                   "flex items-center justify-between group px-4 py-3 rounded-xl transition-all duration-200",
                   isActive 
                     ? "bg-primary text-white shadow-lg shadow-primary/20" 
-                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                    : "text-muted-foreground hover:bg-slate-100 hover:text-foreground"
                 )}
               >
                 <div className="flex items-center gap-3">
@@ -84,7 +84,7 @@ export function Sidebar() {
         {!user ? (
           <Button 
             onClick={handleLogin}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/20 text-primary hover:bg-primary hover:text-white transition-all border border-primary/20"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/5 text-primary hover:bg-primary hover:text-white transition-all border border-primary/20"
           >
             <LogIn className="h-5 w-5" />
             <span className="font-medium text-sm">Sign In</span>
@@ -93,7 +93,7 @@ export function Sidebar() {
           <div className="space-y-2">
             <Link 
               href="/dashboard/settings"
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground hover:bg-white/5 hover:text-foreground transition-all"
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-muted-foreground hover:bg-slate-100 hover:text-foreground transition-all"
             >
               <Settings className="h-5 w-5" />
               <span className="font-medium text-sm">Settings</span>

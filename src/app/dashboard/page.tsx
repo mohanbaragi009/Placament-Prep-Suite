@@ -55,8 +55,7 @@ export default function Dashboard() {
       </header>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Overall Readiness */}
-        <Card className="glass border-white/10 overflow-hidden flex flex-col justify-center">
+        <Card className="glass overflow-hidden flex flex-col justify-center border-none">
           <CardHeader>
             <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Overall Readiness</CardTitle>
           </CardHeader>
@@ -70,7 +69,7 @@ export default function Dashboard() {
                   stroke="currentColor"
                   strokeWidth="8"
                   fill="transparent"
-                  className="text-white/5"
+                  className="text-slate-100"
                 />
                 <circle
                   cx="96"
@@ -99,15 +98,14 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        {/* Skill Breakdown */}
-        <Card className="glass border-white/10">
+        <Card className="glass border-none">
           <CardHeader>
             <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Skill Breakdown</CardTitle>
           </CardHeader>
           <CardContent className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
-                <PolarGrid stroke="rgba(255,255,255,0.1)" />
+                <PolarGrid stroke="rgba(0,0,0,0.05)" />
                 <PolarAngleAxis 
                   dataKey="subject" 
                   tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10, fontWeight: 'bold' }} 
@@ -118,16 +116,15 @@ export default function Dashboard() {
                   dataKey="A"
                   stroke="hsl(var(--primary))"
                   fill="hsl(var(--primary))"
-                  fillOpacity={0.4}
+                  fillOpacity={0.3}
                 />
               </RadarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        {/* Continue Practice & Weekly Goals */}
         <div className="space-y-8">
-          <Card className="glass border-white/10 group overflow-hidden">
+          <Card className="glass group overflow-hidden border-none">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Continue Practice</CardTitle>
             </CardHeader>
@@ -137,7 +134,7 @@ export default function Dashboard() {
                   <h3 className="text-2xl font-bold mb-1">Dynamic Programming</h3>
                   <p className="text-xs text-muted-foreground">Module 4: Optimization Problems</p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
                   <Play className="h-5 w-5 fill-current" />
                 </div>
               </div>
@@ -148,13 +145,13 @@ export default function Dashboard() {
                 </div>
                 <Progress value={30} className="h-1.5" />
               </div>
-              <Button className="w-full mt-6 glass-button rounded-xl h-11 font-bold text-xs uppercase tracking-widest">
+              <Button className="w-full mt-6 bg-primary/5 hover:bg-primary/10 text-primary border-none rounded-xl h-11 font-bold text-xs uppercase tracking-widest transition-all">
                 Continue Session
               </Button>
             </CardContent>
           </Card>
 
-          <Card className="glass border-white/10">
+          <Card className="glass border-none">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Weekly Goals</CardTitle>
             </CardHeader>
@@ -171,7 +168,7 @@ export default function Dashboard() {
                   <div key={i} className="flex flex-col items-center gap-2">
                     <div className={cn(
                       "w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold transition-all",
-                      i < 5 ? "bg-primary text-white shadow-lg shadow-primary/20" : "bg-white/5 text-muted-foreground"
+                      i < 5 ? "bg-primary text-white shadow-lg shadow-primary/20" : "bg-slate-100 text-muted-foreground"
                     )}>
                       {i < 5 ? <CheckCircle2 className="h-4 w-4" /> : day}
                     </div>
@@ -183,16 +180,15 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        {/* Upcoming Assessments */}
-        <Card className="glass border-white/10">
+        <Card className="glass border-none">
           <CardHeader>
             <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Upcoming Assessments</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {upcomingAssessments.map((item, i) => (
-              <div key={i} className="flex items-center justify-between p-4 rounded-xl glass border-white/5 hover:bg-white/10 transition-all cursor-pointer group">
+              <div key={i} className="flex items-center justify-between p-4 rounded-xl bg-white/50 border border-slate-100 hover:bg-white hover:border-primary/20 transition-all cursor-pointer group shadow-sm">
                 <div className="flex items-center gap-4">
-                  <div className="text-2xl w-10 h-10 flex items-center justify-center bg-white/5 rounded-lg group-hover:scale-110 transition-transform">
+                  <div className="text-2xl w-10 h-10 flex items-center justify-center bg-slate-50 rounded-lg group-hover:scale-110 transition-transform">
                     {item.icon}
                   </div>
                   <div>
