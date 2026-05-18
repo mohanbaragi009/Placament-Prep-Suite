@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState, useEffect } from 'react';
@@ -13,7 +14,7 @@ import {
   PolarRadiusAxis, 
   Radar 
 } from "recharts";
-import { Play, Calendar, CheckCircle2, ChevronRight, ExternalLink, Sparkles } from "lucide-react";
+import { Play, Calendar, CheckCircle2, ChevronRight, ExternalLink, Sparkles, Rocket, Cpu, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { useUser, useFirebase, useDoc } from "@/firebase";
@@ -49,6 +50,27 @@ const upcomingAssessments = [
     url: "https://takeuforward.org/interviews/behavioral-interview-questions-most-asked/",
     isLive: false 
   },
+];
+
+const comingSoonFeatures = [
+  {
+    title: "AI Interview Simulator",
+    description: "Real-time voice and video mock interviews with instant feedback.",
+    icon: <Cpu className="h-5 w-5 text-primary" />,
+    date: "Q4 2024"
+  },
+  {
+    title: "Resume Optimizer",
+    description: "ATS-compliant resume tailoring based on specific job descriptions.",
+    icon: <Sparkles className="h-5 w-5 text-purple-500" />,
+    date: "Q1 2025"
+  },
+  {
+    title: "Referral Network",
+    description: "Connect with mentors at top companies for direct referrals.",
+    icon: <Users className="h-5 w-5 text-blue-500" />,
+    date: "Q2 2025"
+  }
 ];
 
 export default function Dashboard() {
@@ -287,6 +309,43 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Coming Soon Section */}
+      <section className="mt-12">
+        <div className="flex items-center gap-3 mb-8">
+          <Rocket className="h-6 w-6 text-primary" />
+          <h2 className="text-3xl font-headline font-bold tracking-tight">Coming Soon</h2>
+          <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-widest">Roadmap 2024-25</span>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {comingSoonFeatures.map((feature, i) => (
+            <Card key={i} className="glass border-white/10 hover:border-primary/30 transition-all duration-300 group overflow-hidden">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    {feature.icon}
+                  </div>
+                  <Badge variant="outline" className="text-[9px] font-bold border-slate-200">
+                    {feature.date}
+                  </Badge>
+                </div>
+                <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors">{feature.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {feature.description}
+                </p>
+                <div className="mt-4 flex items-center gap-1 text-[10px] font-bold uppercase text-primary/60">
+                  <span>Stay Tuned</span>
+                  <ChevronRight className="h-3 w-3" />
+                </div>
+              </CardContent>
+              <div className="h-1 w-full bg-slate-100 overflow-hidden">
+                <div className="h-full bg-primary w-0 group-hover:w-full transition-all duration-700" />
+              </div>
+            </Card>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
