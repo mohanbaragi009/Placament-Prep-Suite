@@ -5,26 +5,18 @@ import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Lock, Rocket, ShieldCheck, ArrowLeft, CheckCircle2, AlertTriangle } from "lucide-react";
+import { Lock, Rocket, ShieldCheck, ArrowLeft, CheckCircle2, AlertTriangle, Sparkles } from "lucide-react";
 import Link from 'next/link';
+import { PrpState } from "@/lib/prp-state";
 
 export default function ShipPage() {
   const [isLocked, setIsLocked] = useState(true);
+  const [isShipped, setIsShipped] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('prp_test_checklist');
-    if (saved) {
-      try {
-        const checklist = JSON.parse(saved);
-        const passedCount = Object.values(checklist).filter(v => v === true).length;
-        if (passedCount === 10) {
-          setIsLocked(false);
-        }
-      } catch (e) {
-        console.error("Failed to parse checklist", e);
-      }
-    }
+    setIsLocked(!PrpState.getChecklistPassed());
+    setIsShipped(PrpState.isShipped());
     setMounted(true);
   }, []);
 
@@ -69,29 +61,46 @@ export default function ShipPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-sm text-muted-foreground">
-            <p>All 10 stability tests passed successfully.</p>
+            <p>All quality and logic parameters met.</p>
             <ul className="space-y-2">
-              <li className="flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-green-500" /> Validation Logic Verified</li>
-              <li className="flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-green-500" /> Analysis Engine Stress-Tested</li>
-              <li className="flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-green-500" /> Storage Persistence Confirmed</li>
+              <li className="flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-green-500" /> 10/10 Stability Tests Passed</li>
+              <li className="flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-green-500" /> Proof Artifacts Registered</li>
+              <li className="flex items-center gap-2"><div className="w-1 h-1 rounded-full bg-green-500" /> Shipped Status Validated</li>
             </ul>
           </CardContent>
         </Card>
 
         <Card className="glass border-white/10 flex flex-col justify-center items-center p-8 text-center">
-          <Rocket className="h-16 w-16 text-primary mb-6 animate-bounce" />
-          <h3 className="text-2xl font-bold mb-2">Final Step</h3>
-          <p className="text-sm text-muted-foreground mb-8 italic">Review all configuration one last time before pushing to production.</p>
-          <Button className="w-full h-14 rounded-2xl bg-primary text-xl font-bold shadow-2xl shadow-primary/30 hover:scale-[1.02] transition-all">
-            Initiate Deploy
-          </Button>
+          {isShipped ? (
+             <div className="space-y-6">
+                <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
+                   <Sparkles className="h-10 w-10 text-primary" />
+                </div>
+                <h3 className="text-2xl font-bold">Project Shipped</h3>
+                <p className="text-sm text-muted-foreground italic">You built a real product. This is your proof of work.</p>
+                <Link href="/prp/proof">
+                  <Button className="w-full rounded-xl">View Submission</Button>
+                </Link>
+             </div>
+          ) : (
+            <>
+              <Rocket className="h-16 w-16 text-primary mb-6 animate-bounce" />
+              <h3 className="text-2xl font-bold mb-2">Final Step</h3>
+              <p className="text-sm text-muted-foreground mb-8 italic">Register your build proofs to unlock the final status.</p>
+              <Link href="/prp/proof" className="w-full">
+                <Button className="w-full h-14 rounded-2xl bg-primary text-xl font-bold shadow-2xl shadow-primary/30 hover:scale-[1.02] transition-all">
+                  Register Proof
+                </Button>
+              </Link>
+            </>
+          )}
         </Card>
       </div>
 
       <div className="p-6 rounded-2xl border border-white/5 bg-white/5 flex items-start gap-4 max-w-2xl mx-auto">
         <AlertTriangle className="h-5 w-5 text-yellow-500 mt-1 shrink-0" />
         <p className="text-xs text-muted-foreground leading-relaxed">
-          Deploying will make this version of the <span className="font-bold text-foreground">Placement Readiness Platform</span> live to all users. Ensure you have backed up any critical local test data before continuing.
+          Once your project is marked as <span className="font-bold text-foreground">Shipped</span>, ensure you copy your Final Submission from the Proof page for record keeping.
         </p>
       </div>
     </div>
