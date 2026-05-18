@@ -7,12 +7,44 @@ import { cn } from "@/lib/utils";
 
 export default function Practice() {
   const problems = [
-    { id: 1, title: "Longest Substring Without Repeating Characters", difficulty: "Medium", tags: ["String", "Sliding Window"] },
-    { id: 2, title: "Median of Two Sorted Arrays", difficulty: "Hard", tags: ["Array", "Binary Search"] },
-    { id: 3, title: "Valid Parentheses", difficulty: "Easy", tags: ["Stack", "String"] },
-    { id: 4, title: "Merge K Sorted Lists", difficulty: "Hard", tags: ["Linked List", "Heap"] },
-    { id: 5, title: "Reverse Integer", difficulty: "Medium", tags: ["Math"] },
+    { 
+      id: 1, 
+      title: "Longest Substring Without Repeating Characters", 
+      difficulty: "Medium", 
+      tags: ["String", "Sliding Window"],
+      slug: "longest-substring-without-repeating-characters"
+    },
+    { 
+      id: 2, 
+      title: "Median of Two Sorted Arrays", 
+      difficulty: "Hard", 
+      tags: ["Array", "Binary Search"],
+      slug: "median-of-two-sorted-arrays"
+    },
+    { 
+      id: 3, 
+      title: "Valid Parentheses", 
+      difficulty: "Easy", 
+      tags: ["Stack", "String"],
+      slug: "valid-parentheses"
+    },
+    { 
+      id: 4, 
+      title: "Merge K Sorted Lists", 
+      difficulty: "Hard", 
+      tags: ["Linked List", "Heap"],
+      slug: "merge-k-sorted-lists"
+    },
+    { 
+      id: 5, 
+      title: "Reverse Integer", 
+      difficulty: "Medium", 
+      tags: ["Math"],
+      slug: "reverse-integer"
+    },
   ];
+
+  const getLeetCodeUrl = (slug: string) => `https://leetcode.com/problems/${slug}/`;
 
   return (
     <div className="space-y-10">
@@ -55,10 +87,17 @@ export default function Practice() {
                     </div>
                   </div>
                 </div>
-                <Button className="glass-button rounded-xl h-12 px-6 group">
-                  Solve Now
-                  <Play className="ml-2 h-4 w-4 fill-current group-hover:translate-x-1 transition-transform" />
-                </Button>
+                <a 
+                  href={getLeetCodeUrl(p.slug)} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Button className="glass-button rounded-xl h-12 px-6 group">
+                    Solve Now
+                    <Play className="ml-2 h-4 w-4 fill-current group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </a>
               </div>
               <div className="h-1 w-full bg-white/5 overflow-hidden">
                 <div className="h-full bg-primary w-[30%] opacity-0 group-hover:opacity-100 transition-all duration-500" />
