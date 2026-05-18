@@ -5,6 +5,12 @@
       "description": "Modern tech workspace for candidate dashboard",
       "imageUrl": "https://picsum.photos/seed/42/1200/400",
       "imageHint": "tech workspace"
+    },
+    {
+      "id": "landing-hero-bg",
+      "description": "Clean abstract background with soft light and gradients",
+      "imageUrl": "https://picsum.photos/seed/landing/1920/1080",
+      "imageHint": "abstract background"
     }
   ]
 }
