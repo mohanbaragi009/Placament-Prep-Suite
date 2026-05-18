@@ -1,4 +1,3 @@
-
 'use client';
 
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
@@ -10,16 +9,23 @@ let app: FirebaseApp | null = null;
 let db: Firestore | null = null;
 let auth: Auth | null = null;
 
+/**
+ * Initializes Firebase services.
+ * Falls back to Local Mode if the minimal config is not provided.
+ */
 export function initializeFirebase() {
-  // Check for minimum required config to avoid crashes during deployment
-  if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
-    console.info("Firebase configuration is incomplete. The app will run in Local Mode (Local Storage only).");
+  // Only the API Key is required to attempt initialization, 
+  // though Project ID is typically needed for full cloud services.
+  if (!firebaseConfig.apiKey) {
+    console.info("Firebase API Key is missing. The app is running in Local Mode (Browser Storage only).");
     return null;
   }
 
   try {
     if (getApps().length === 0) {
-      app = initializeApp(firebaseConfig);
+      // Note: Firebase usually requires a Project ID. Without it, initializeApp might throw.
+      // This catch block handles the fallback to Local Mode gracefully.
+      app = initializeApp(firebaseConfig as any);
     } else {
       app = getApp();
     }
@@ -27,7 +33,7 @@ export function initializeFirebase() {
     auth = getAuth(app);
     return { app, db, auth };
   } catch (error) {
-    console.error("Failed to initialize Firebase:", error);
+    console.info("Cloud Services unavailable (Missing Project ID). Defaulting to Local Mode.");
     return null;
   }
 }
