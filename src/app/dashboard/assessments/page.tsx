@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Timer, AlertCircle, CheckCircle2 } from "lucide-react";
 
 export default function Assessments() {
@@ -17,8 +18,10 @@ export default function Assessments() {
             <div className="flex items-center justify-between mb-2">
               <Badge className="bg-primary text-white">UPCOMING</Badge>
               <div className="flex items-center gap-2 text-primary">
-                <Timer className="h-4 w-4" />
-                <span className="text-sm font-bold">Starts in 2h 45m</span>
+                <span className="text-sm font-bold flex items-center gap-2">
+                  <Timer className="h-4 w-4" />
+                  Starts in 2h 45m
+                </span>
               </div>
             </div>
             <CardTitle className="text-3xl font-headline">Monthly Global Coding Challenge</CardTitle>
@@ -44,7 +47,7 @@ export default function Assessments() {
             ].map((report, i) => (
               <div key={i} className="flex items-center justify-between p-4 rounded-xl glass border-white/5">
                 <div className="flex items-center gap-4">
-                  {report.score.split('/')[0] > '80' ? <CheckCircle2 className="text-green-400" /> : <AlertCircle className="text-yellow-400" />}
+                  {parseInt(report.score) > 80 ? <CheckCircle2 className="text-green-400" /> : <AlertCircle className="text-yellow-400" />}
                   <div>
                     <h4 className="font-bold">{report.title}</h4>
                     <p className="text-xs text-muted-foreground">{report.date}</p>
