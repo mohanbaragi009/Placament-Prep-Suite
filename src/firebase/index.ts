@@ -1,3 +1,4 @@
+
 'use client';
 
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
@@ -10,14 +11,24 @@ let db: Firestore;
 let auth: Auth;
 
 export function initializeFirebase() {
-  if (getApps().length === 0) {
-    app = initializeApp(firebaseConfig);
-  } else {
-    app = getApp();
+  if (!firebaseConfig.apiKey) {
+    console.warn("Firebase API Key is missing. Cloud features will be disabled until configured in .env");
+    return null;
   }
-  db = getFirestore(app);
-  auth = getAuth(app);
-  return { app, db, auth };
+
+  try {
+    if (getApps().length === 0) {
+      app = initializeApp(firebaseConfig);
+    } else {
+      app = getApp();
+    }
+    db = getFirestore(app);
+    auth = getAuth(app);
+    return { app, db, auth };
+  } catch (error) {
+    console.error("Failed to initialize Firebase:", error);
+    return null;
+  }
 }
 
 export { FirebaseProvider, useFirebase, useFirebaseApp, useFirestore, useAuth } from './provider';

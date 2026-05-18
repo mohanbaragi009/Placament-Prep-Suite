@@ -1,3 +1,4 @@
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -15,10 +16,16 @@ export function FirebaseClientProvider({ children }: { children: React.ReactNode
 
   useEffect(() => {
     const initialized = initializeFirebase();
-    setServices(initialized);
+    if (initialized) {
+      setServices(initialized);
+    }
   }, []);
 
-  if (!services) return null;
+  // If Firebase isn't initialized, we still render children so the app doesn't go blank,
+  // but cloud features will naturally fail or show warnings.
+  if (!services) {
+    return <>{children}</>;
+  }
 
   return (
     <FirebaseProvider app={services.app} db={services.db} auth={services.auth}>
