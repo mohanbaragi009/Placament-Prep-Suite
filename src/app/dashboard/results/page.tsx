@@ -1,7 +1,7 @@
 
 "use client"
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,28 +13,42 @@ import {
   Download,
   Sparkles,
   Zap,
-  Info
+  Info,
+  Loader2
 } from "lucide-react";
 import Link from 'next/link';
 import { Storage } from "@/lib/storage";
 import { AnalysisResult, calculateLiveScore } from "@/lib/analysis-engine";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useUser, useFirestore, useDoc } from "@/firebase";
+import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
 
 export default function ResultsPage() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
+  const { user } = useUser();
+  const { db } = useFirestore();
   const id = searchParams.get('id');
+  
   const [data, setData] = useState<AnalysisResult | null>(null);
 
+  // Firestore reference
+  const analysisRef = useMemo(() => {
+    if (!user || !id) return null;
+    return doc(db, "users", user.uid, "analyses", id);
+  }, [user, id, db]);
+
+  const { data: cloudData, loading: cloudLoading } = useDoc<AnalysisResult>(analysisRef as any);
+
   useEffect(() => {
-    if (id) {
-      const result = Storage.getById(id);
-      if (result) {
-        setData(result);
-      }
+    if (cloudData) {
+      setData(cloudData);
+    } else if (id) {
+      const local = Storage.getById(id);
+      if (local) setData(local);
     }
-  }, [id]);
+  }, [cloudData, id]);
 
   const toggleSkillConfidence = useCallback((skill: string) => {
     if (!data) return;
@@ -58,7 +72,15 @@ export default function ResultsPage() {
 
     setData(updatedData);
     Storage.updateAnalysis(updatedData);
-  }, [data]);
+
+    if (user && id) {
+      updateDoc(doc(db, "users", user.uid, "analyses", id), {
+        skillConfidenceMap: updatedConfidenceMap,
+        finalScore: newScore,
+        updatedAt: serverTimestamp()
+      });
+    }
+  }, [data, user, id, db]);
 
   const downloadTxt = () => {
     if (!data) return;
@@ -69,10 +91,10 @@ Date: ${new Date(data.createdAt).toLocaleDateString()}
 Final Readiness Score: ${data.finalScore}%
 
 7-DAY INTENSIVE PLAN:
-${(data.plan7Days || []).map(p => `${p.day} (${p.focus}): ${p.tasks.join(', ')}`).join('\n')}
+${(data.plan7Days || []).map(p => `${p.day} (${p.focus}): ${p.tasks?.join(', ') || ''}`).join('\n')}
 
 ROUND-WISE CHECKLIST:
-${(data.checklist || []).map(c => `[${c.roundTitle}]\n${c.items.map(i => `- ${i}`).join('\n')}`).join('\n\n')}
+${(data.checklist || []).map(c => `[${c.roundTitle}]\n${c.items?.map(i => `- ${i}`).join('\n') || ''}`).join('\n\n')}
 
 TOP 10 POTENTIAL QUESTIONS:
 ${(data.questions || []).map((q, i) => `${i + 1}. ${q}`).join('\n')}
@@ -86,6 +108,13 @@ ${(data.questions || []).map((q, i) => `${i + 1}. ${q}`).join('\n')}
     link.click();
     URL.revokeObjectURL(url);
   };
+
+  if (cloudLoading && !data) return (
+    <div className="h-screen flex flex-col items-center justify-center p-10">
+      <Loader2 className="h-10 w-10 animate-spin text-primary opacity-20" />
+      <p className="mt-4 text-muted-foreground">Loading analysis...</p>
+    </div>
+  );
 
   if (!data) return (
     <div className="h-screen flex flex-col items-center justify-center p-10 animate-in fade-in">
@@ -177,7 +206,7 @@ ${(data.questions || []).map((q, i) => `${i + 1}. ${q}`).join('\n')}
                   <div className="bg-primary/10 text-primary font-bold text-xs px-3 py-1 rounded-lg shrink-0">{p.day}</div>
                   <div>
                     <p className="text-sm font-bold text-primary/80 mb-1">{p.focus}</p>
-                    <p className="text-sm">{p.tasks.join(', ')}</p>
+                    <p className="text-sm">{p.tasks?.join(', ') || ''}</p>
                   </div>
                 </div>
               ))}
@@ -191,9 +220,9 @@ ${(data.questions || []).map((q, i) => `${i + 1}. ${q}`).join('\n')}
                 <div key={idx} className="space-y-4">
                   <h4 className="font-bold text-primary border-b border-primary/10 pb-2">{round.roundTitle}</h4>
                   <ul className="space-y-2">
-                    {round.items.map((item, i) => (
+                    {round.items?.map((item, i) => (
                       <li key={i} className="flex items-center gap-3 text-sm text-muted-foreground"><div className="w-1.5 h-1.5 rounded-full bg-primary/40" /> {item}</li>
-                    ))}
+                    )) || null}
                   </ul>
                 </div>
               ))}

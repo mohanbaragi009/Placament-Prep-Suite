@@ -1,3 +1,4 @@
+
 "use client"
 
 import React, { useState } from 'react';
@@ -10,7 +11,8 @@ import { Sparkles, Loader2, Building2, Briefcase, AlertTriangle } from "lucide-r
 import { analyzeJobDescription } from "@/ai/flows/jd-analysis-flow";
 import { useToast } from "@/hooks/use-toast";
 import { useFirestore, useUser } from "@/firebase";
-import { doc, setDoc, collection, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { Storage } from "@/lib/storage";
 
 export default function AnalyzePage() {
   const router = useRouter();
@@ -53,13 +55,14 @@ export default function AnalyzePage() {
         company: form.company || "",
         role: form.role || "",
         jdText: form.jd,
-        skillConfidenceMap: Object.values(result.extractedSkills).flat().reduce((acc, skill) => ({
+        skillConfidenceMap: Object.values(result.extractedSkills).flat().reduce((acc: any, skill: any) => ({
           ...acc,
           [skill]: 'practice'
         }), {}),
         finalScore: result.baseScore
       };
 
+      // Save to Firestore if authenticated
       if (user) {
         const analysisRef = doc(db, "users", user.uid, "analyses", analysisId);
         setDoc(analysisRef, {
@@ -68,8 +71,8 @@ export default function AnalyzePage() {
         });
       }
 
-      const existing = JSON.parse(localStorage.getItem('placement_prep_history') || '[]');
-      localStorage.setItem('placement_prep_history', JSON.stringify([finalAnalysis, ...existing]));
+      // Always save to local storage for quick access/offline fallback
+      Storage.saveAnalysis(finalAnalysis as any);
 
       router.push(`/dashboard/results?id=${analysisId}`);
     } catch (error) {

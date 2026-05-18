@@ -1,39 +1,64 @@
+
 "use client"
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { History as HistoryIcon, Search, ChevronRight, Trash2, AlertCircle } from "lucide-react";
+import { History as HistoryIcon, Search, ChevronRight, Trash2, AlertCircle, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Storage } from "@/lib/storage";
 import { AnalysisResult } from "@/lib/analysis-engine";
+import { useUser, useFirestore, useCollection } from "@/firebase";
+import { collection, query, orderBy } from "firebase/firestore";
 
 export default function HistoryPage() {
-  const [history, setHistory] = useState<AnalysisResult[]>([]);
+  const { user } = useUser();
+  const { db } = useFirestore();
   const [search, setSearch] = useState('');
-  const [hasCorruption, setHasCorruption] = useState(false);
+  const [localHistory, setLocalHistory] = useState<AnalysisResult[]>([]);
+
+  // Real-time Firestore query
+  const analysesQuery = useMemo(() => {
+    if (!user) return null;
+    return query(
+      collection(db, "users", user.uid, "analyses"),
+      orderBy("createdAt", "desc")
+    );
+  }, [user, db]);
+
+  const { data: cloudHistory, loading: cloudLoading } = useCollection<AnalysisResult>(analysesQuery as any);
 
   useEffect(() => {
-    const data = Storage.getHistory();
-    setHistory(data);
-    // Rough check for corruption based on counts
-    const raw = localStorage.getItem('placement_prep_history');
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (parsed.length > data.length) setHasCorruption(true);
-    }
+    setLocalHistory(Storage.getHistory());
   }, []);
 
-  const filteredHistory = history.filter(h => 
+  // Merge cloud and local history, preferring cloud
+  const combinedHistory = useMemo(() => {
+    const historyMap = new Map();
+    
+    // Add local first
+    localHistory.forEach(item => historyMap.set(item.id, item));
+    
+    // Cloud overrides/adds
+    if (cloudHistory) {
+      cloudHistory.forEach(item => historyMap.set(item.id, item));
+    }
+    
+    return Array.from(historyMap.values()).sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }, [localHistory, cloudHistory]);
+
+  const filteredHistory = combinedHistory.filter(h => 
     h.company.toLowerCase().includes(search.toLowerCase()) || 
     h.role.toLowerCase().includes(search.toLowerCase())
   );
 
   const clearHistory = () => {
-    if (confirm("Are you sure you want to clear all history?")) {
+    if (confirm("Are you sure you want to clear your local history? (Cloud data remains safe)")) {
       Storage.clearHistory();
-      setHistory([]);
+      setLocalHistory([]);
     }
   };
 
@@ -44,19 +69,12 @@ export default function HistoryPage() {
           <h1 className="text-4xl font-headline font-bold mb-2">History</h1>
           <p className="text-muted-foreground">Manage and revisit your past job analyses.</p>
         </div>
-        {history.length > 0 && (
+        {combinedHistory.length > 0 && (
           <Button variant="ghost" onClick={clearHistory} className="text-destructive hover:bg-destructive/10">
-            <Trash2 className="h-4 w-4 mr-2" /> Clear All
+            <Trash2 className="h-4 w-4 mr-2" /> Clear Local
           </Button>
         )}
       </div>
-
-      {hasCorruption && (
-        <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 flex items-center gap-3 text-destructive text-sm font-medium">
-          <AlertCircle className="h-4 w-4" />
-          Some saved entries couldn't be loaded due to format changes. Create new analyses for fresh data.
-        </div>
-      )}
 
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -68,7 +86,12 @@ export default function HistoryPage() {
         />
       </div>
 
-      {filteredHistory.length === 0 ? (
+      {cloudLoading && combinedHistory.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20">
+          <Loader2 className="h-10 w-10 animate-spin text-primary opacity-20" />
+          <p className="mt-4 text-muted-foreground animate-pulse">Syncing with cloud...</p>
+        </div>
+      ) : filteredHistory.length === 0 ? (
         <Card className="glass border-dashed border-white/10 py-20 text-center">
           <CardContent>
             <HistoryIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-20" />
