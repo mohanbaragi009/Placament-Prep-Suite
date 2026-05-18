@@ -6,13 +6,14 @@ import { getFirestore, Firestore } from 'firebase/firestore';
 import { getAuth, Auth } from 'firebase/auth';
 import { firebaseConfig } from './config';
 
-let app: FirebaseApp;
-let db: Firestore;
-let auth: Auth;
+let app: FirebaseApp | null = null;
+let db: Firestore | null = null;
+let auth: Auth | null = null;
 
 export function initializeFirebase() {
-  if (!firebaseConfig.apiKey) {
-    console.warn("Firebase API Key is missing. Cloud features will be disabled until configured in .env");
+  // Check for minimum required config to avoid crashes during deployment
+  if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+    console.info("Firebase configuration is incomplete. The app will run in Local Mode (Local Storage only).");
     return null;
   }
 
