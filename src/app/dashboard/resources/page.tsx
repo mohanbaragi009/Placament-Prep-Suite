@@ -3,18 +3,48 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { BookOpen, ExternalLink, Download, Loader2, Sparkles, X, ChevronRight } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { fetchTopicDetails, FetchTopicDetailsOutput } from "@/ai/flows/fetch-topic-details";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
 const RESOURCES_LIST = [
-  { title: "Data Structures Mastery", cat: "Algorithms", items: 12 },
-  { title: "Modern System Design", cat: "Architecture", items: 8 },
-  { title: "Interview Cheat Sheets", cat: "Preparation", items: 5 },
-  { title: "JavaScript ES6+ Deep Dive", cat: "Language", items: 15 },
-  { title: "Cracking the SQL Interview", cat: "Databases", items: 10 },
-  { title: "Behavioral Prep Guide", cat: "Soft Skills", items: 4 },
+  { 
+    title: "Data Structures Mastery", 
+    cat: "Algorithms", 
+    items: 12, 
+    externalUrl: "https://takeuforward.org/strivers-a2z-dsa-course/strivers-a2z-dsa-course-sheet-2-0/" 
+  },
+  { 
+    title: "Modern System Design", 
+    cat: "Architecture", 
+    items: 8, 
+    externalUrl: "https://takeuforward.org/system-design-blueprint-roadmap-for-interviews/" 
+  },
+  { 
+    title: "Interview Cheat Sheets", 
+    cat: "Preparation", 
+    items: 5, 
+    externalUrl: "https://takeuforward.org/interviews/strivers-sde-sheet-top-coding-interview-problems/" 
+  },
+  { 
+    title: "JavaScript ES6+ Deep Dive", 
+    cat: "Language", 
+    items: 15, 
+    externalUrl: "https://takeuforward.org/javascript/javascript-interview-questions-most-asked-part-1/" 
+  },
+  { 
+    title: "Cracking the SQL Interview", 
+    cat: "Databases", 
+    items: 10, 
+    externalUrl: "https://takeuforward.org/dbms/dbms-interview-questions/" 
+  },
+  { 
+    title: "Behavioral Prep Guide", 
+    cat: "Soft Skills", 
+    items: 4, 
+    externalUrl: "https://takeuforward.org/interviews/behavioral-interview-questions-most-asked/" 
+  },
 ];
 
 export default function Resources() {
@@ -22,9 +52,11 @@ export default function Resources() {
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [details, setDetails] = useState<FetchTopicDetailsOutput | null>(null);
   const [loading, setLoading] = useState(false);
+  const [currentExternalUrl, setCurrentExternalUrl] = useState<string>("");
 
-  const handleTopicClick = async (topic: string) => {
+  const handleTopicClick = async (topic: string, url: string) => {
     setSelectedTopic(topic);
+    setCurrentExternalUrl(url);
     setLoading(true);
     setDetails(null);
     
@@ -55,7 +87,7 @@ export default function Resources() {
           <Card 
             key={i} 
             className="glass-card border-white/10 group cursor-pointer overflow-hidden relative"
-            onClick={() => handleTopicClick(res.title)}
+            onClick={() => handleTopicClick(res.title, res.externalUrl)}
           >
             <CardContent className="p-8">
               <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -67,7 +99,14 @@ export default function Resources() {
                 <span className="text-sm">{res.items} Modules</span>
                 <div className="flex gap-3">
                   <Download className="h-4 w-4 hover:text-primary transition-colors" />
-                  <ExternalLink className="h-4 w-4 hover:text-primary transition-colors" />
+                  <a 
+                    href={res.externalUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <ExternalLink className="h-4 w-4 hover:text-primary transition-colors" />
+                  </a>
                 </div>
               </div>
             </CardContent>
@@ -135,15 +174,25 @@ export default function Resources() {
                     <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground mb-6">Learning Path</h3>
                     <div className="space-y-3">
                       {details.recommendedResources.map((res, idx) => (
-                        <a 
+                        <div 
                           key={idx} 
-                          href="#" 
-                          className="flex items-center justify-between p-3 rounded-lg border border-white/5 bg-white/5 hover:bg-white/10 transition-colors group"
+                          className="flex items-center justify-between p-3 rounded-lg border border-white/5 bg-white/5"
                         >
                           <span className="text-sm font-medium">{res.title}</span>
-                          <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                        </a>
+                          <BookOpen className="h-4 w-4 text-muted-foreground" />
+                        </div>
                       ))}
+                      {currentExternalUrl && (
+                        <a 
+                          href={currentExternalUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between p-3 rounded-lg border border-primary/20 bg-primary/5 hover:bg-primary/10 transition-colors group mt-4"
+                        >
+                          <span className="text-sm font-bold text-primary">Visit Full Cheat Sheet</span>
+                          <ExternalLink className="h-4 w-4 text-primary group-hover:translate-x-0.5 transition-transform" />
+                        </a>
+                      )}
                     </div>
                   </section>
                 </div>
