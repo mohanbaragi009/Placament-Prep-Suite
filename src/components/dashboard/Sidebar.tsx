@@ -1,4 +1,3 @@
-
 "use client"
 
 import React from 'react';
@@ -22,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { useUser, useAuth } from "@/firebase";
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 
 const navItems = [
   { label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
@@ -40,11 +40,28 @@ export function Sidebar() {
   const auth = useAuth();
 
   const handleLogin = async () => {
+    if (!auth) {
+      toast({
+        variant: "destructive",
+        title: "Configuration Missing",
+        description: "Firebase is not configured. Please check your .env file.",
+      });
+      return;
+    }
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: error.message,
+      });
+    }
   };
 
   const handleLogout = async () => {
+    if (!auth) return;
     await signOut(auth);
   };
 
