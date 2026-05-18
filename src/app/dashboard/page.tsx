@@ -1,7 +1,6 @@
-
 "use client"
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -13,7 +12,7 @@ import {
   PolarRadiusAxis, 
   Radar 
 } from "recharts";
-import { Play, Calendar, CheckCircle2, ChevronRight } from "lucide-react";
+import { Play, Calendar, CheckCircle2, ChevronRight, Timer } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const radarData = [
@@ -31,9 +30,24 @@ const upcomingAssessments = [
 ];
 
 export default function Dashboard() {
+  const [mounted, setMounted] = useState(false);
   const readinessValue = 72;
-  const circumference = 2 * Math.PI * 45;
-  const offset = circumference - (readinessValue / 100) * circumference;
+  const radius = 45;
+  const circumference = 2 * Math.PI * radius;
+  
+  // Use state for the offset to handle hydration and animation trigger
+  const [offset, setOffset] = useState(circumference);
+
+  useEffect(() => {
+    setMounted(true);
+    // Trigger animation after mount
+    const timer = setTimeout(() => {
+      setOffset(circumference - (readinessValue / 100) * circumference);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [circumference, readinessValue]);
+
+  if (!mounted) return null;
 
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -44,7 +58,7 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Overall Readiness */}
-        <Card className="glass border-white/10 overflow-hidden">
+        <Card className="glass border-white/10 overflow-hidden flex flex-col justify-center">
           <CardHeader>
             <CardTitle className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Overall Readiness</CardTitle>
           </CardHeader>
@@ -54,7 +68,7 @@ export default function Dashboard() {
                 <circle
                   cx="96"
                   cy="96"
-                  r="45"
+                  r={radius}
                   stroke="currentColor"
                   strokeWidth="8"
                   fill="transparent"
@@ -63,13 +77,16 @@ export default function Dashboard() {
                 <circle
                   cx="96"
                   cy="96"
-                  r="45"
+                  r={radius}
                   stroke="currentColor"
                   strokeWidth="8"
                   fill="transparent"
                   strokeDasharray={circumference}
-                  style={{ strokeDashoffset: offset }}
-                  className="text-primary transition-all duration-1000 ease-out"
+                  style={{ 
+                    strokeDashoffset: offset,
+                    transition: 'stroke-dashoffset 1.5s ease-out'
+                  }}
+                  className="text-primary"
                   strokeLinecap="round"
                 />
               </svg>
@@ -122,7 +139,7 @@ export default function Dashboard() {
                   <h3 className="text-2xl font-bold mb-1">Dynamic Programming</h3>
                   <p className="text-xs text-muted-foreground">Module 4: Optimization Problems</p>
                 </div>
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
                   <Play className="h-5 w-5 fill-current" />
                 </div>
               </div>
@@ -134,7 +151,7 @@ export default function Dashboard() {
                 <Progress value={30} className="h-1.5" />
               </div>
               <Button className="w-full mt-6 glass-button rounded-xl h-11 font-bold text-xs uppercase tracking-widest">
-                Resume Session
+                Continue Session
               </Button>
             </CardContent>
           </Card>
