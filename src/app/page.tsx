@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
-import { Code, Video, BarChart3, ChevronRight, Sparkles } from "lucide-react";
+import { Code, Video, BarChart3, ChevronRight, Sparkles, Zap } from "lucide-react";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 
 export default function LandingPage() {
@@ -25,28 +25,39 @@ export default function LandingPage() {
         </div>
       )}
 
-      {/* Navbar */}
-      <nav className="fixed top-0 w-full z-50 glass-nav px-6 md:px-12 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
-            <Code className="text-white h-5 w-5" />
+      {/* High-Fidelity Navbar */}
+      <nav className="fixed top-0 w-full z-50 glass-nav px-6 md:px-12 h-20 flex items-center justify-between border-b border-white/40 shadow-sm">
+        <div className="flex items-center gap-3 group cursor-pointer">
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg shadow-primary/30 group-hover:rotate-6 transition-transform">
+            <Code className="text-white h-6 w-6" />
           </div>
-          <span className="font-headline text-xl font-bold tracking-tight text-slate-900">Placement Prep</span>
+          <div className="flex flex-col">
+            <span className="font-headline text-xl font-black tracking-tight text-slate-900 leading-none">Placement Prep</span>
+            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-primary mt-1 opacity-80">Premium Build</span>
+          </div>
         </div>
+
+        <div className="hidden md:flex items-center gap-10">
+          <Link href="#features" className="text-xs font-black uppercase tracking-widest text-slate-500 hover:text-primary transition-colors">Features</Link>
+          <Link href="#about" className="text-xs font-black uppercase tracking-widest text-slate-500 hover:text-primary transition-colors">Methodology</Link>
+          <Link href="#roadmap" className="text-xs font-black uppercase tracking-widest text-slate-500 hover:text-primary transition-colors">Roadmap</Link>
+        </div>
+
         <div className="flex items-center gap-6">
-          <Link href="/dashboard" className="text-sm font-bold text-slate-600 hover:text-primary transition-colors">
+          <Link href="/dashboard" className="text-xs font-black uppercase tracking-widest text-slate-600 hover:text-primary transition-colors hidden sm:block">
             Login
           </Link>
           <Link href="/dashboard">
-            <Button className="rounded-full px-8 bg-primary hover:bg-primary/90 text-white font-bold shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95">
+            <Button className="rounded-full h-11 px-8 bg-slate-900 hover:bg-slate-800 text-white font-bold shadow-xl shadow-slate-900/20 transition-all hover:scale-105 active:scale-95 flex items-center gap-2">
               Join Now
+              <Zap className="h-4 w-4 fill-current" />
             </Button>
           </Link>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative z-10 flex-1 flex flex-col items-center justify-center pt-32 pb-20 px-6 text-center max-w-5xl mx-auto animate-in fade-in duration-1000">
+      <section className="relative z-10 flex-1 flex flex-col items-center justify-center pt-40 pb-20 px-6 text-center max-w-5xl mx-auto animate-in fade-in duration-1000">
         <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full glass mb-12 shadow-sm border-white/50 animate-in slide-in-from-bottom-4 duration-700 hover:scale-110 transition-transform cursor-default">
           <Sparkles className="h-4 w-4 text-primary animate-pulse" />
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary">NEW: AI MOCK INTERVIEWS</span>
@@ -70,7 +81,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Grid */}
-      <section className="relative z-10 py-24 px-6 max-w-7xl mx-auto w-full">
+      <section id="features" className="relative z-10 py-24 px-6 max-w-7xl mx-auto w-full">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {[
             {
