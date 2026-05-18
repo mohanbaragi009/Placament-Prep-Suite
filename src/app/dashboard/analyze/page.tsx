@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Sparkles, Loader2, Building2, Briefcase, AlertTriangle } from "lucide-react";
+import { Sparkles, Loader2, Building2, Briefcase, AlertTriangle, Zap } from "lucide-react";
 import { analyzeJobDescription } from "@/ai/flows/jd-analysis-flow";
 import { useToast } from "@/hooks/use-toast";
 import { useFirebase, useUser } from "@/firebase";
@@ -93,7 +93,7 @@ export default function AnalyzePage() {
         <p className="text-muted-foreground font-medium italic opacity-80">"Paste the job description, receive your personalized blueprint."</p>
       </div>
 
-      <Card className="glass-card shadow-3xl overflow-hidden border-none p-2">
+      <Card className="glass-card shadow-3xl overflow-hidden border-none p-2 hover:rotate-0">
         <CardHeader className="bg-white/20 border-b border-white/40 px-8 py-6">
           <CardTitle className="text-2xl font-black tracking-tight flex items-center gap-3">
             <div className="p-2 rounded-xl bg-primary/10">
@@ -103,12 +103,21 @@ export default function AnalyzePage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-8 space-y-10">
-          {!user && (
-            <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10 text-xs text-primary font-bold flex items-center gap-3 backdrop-blur-sm animate-pulse">
-              <Sparkles className="h-4 w-4" />
-              Sign in to unlock persistent cloud storage for your analyses.
+          {/* AI Strategy Insight Banner */}
+          <div className="p-5 rounded-2xl bg-primary/5 border border-primary/10 flex items-center gap-4 backdrop-blur-sm relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none">
+              <Zap className="h-16 w-16 text-primary" />
             </div>
-          )}
+            <div className="p-2.5 rounded-xl bg-primary/20 text-primary shadow-inner shrink-0">
+              <Sparkles className="h-5 w-5" />
+            </div>
+            <div>
+              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-primary mb-1">AI Strategy Insight</h4>
+              <p className="text-xs text-primary/80 font-bold leading-relaxed">
+                Our engine extracts 100+ technical markers to build a deterministic 7-day preparation roadmap tailored to this role.
+              </p>
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-3">
