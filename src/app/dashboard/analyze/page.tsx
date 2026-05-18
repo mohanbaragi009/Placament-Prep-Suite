@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useState } from 'react';
@@ -68,6 +67,8 @@ export default function AnalyzePage() {
         setDoc(analysisRef, {
           ...finalAnalysis,
           timestamp: serverTimestamp()
+        }).catch(err => {
+          console.error("Error saving to Firestore:", err);
         });
       }
 
