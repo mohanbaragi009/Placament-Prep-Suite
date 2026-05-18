@@ -21,6 +21,21 @@
         "userId": { "type": "string" }
       },
       "required": ["id", "company", "role", "jdText", "userId"]
+    },
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Information about the candidate",
+      "type": "object",
+      "properties": {
+        "displayName": { "type": "string" },
+        "bio": { "type": "string" },
+        "title": { "type": "string" },
+        "skills": { "type": "array", "items": { "type": "string" } },
+        "github": { "type": "string" },
+        "linkedin": { "type": "string" },
+        "twitter": { "type": "string" },
+        "email": { "type": "string" }
+      }
     }
   },
   "auth": {
@@ -30,6 +45,10 @@
     "/users/{userId}/analyses/{analysisId}": {
       "schema": "JobAnalysis",
       "description": "User's saved job analyses"
+    },
+    "/users/{userId}/profile/main": {
+      "schema": "UserProfile",
+      "description": "User's professional profile details"
     }
   }
 }
