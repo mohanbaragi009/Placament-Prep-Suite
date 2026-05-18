@@ -1,7 +1,6 @@
-
 'use server';
 /**
- * @fileOverview AI-powered Job Description analysis flow.
+ * @fileOverview Standardized AI-powered Job Description analysis flow.
  */
 
 import { ai } from '@/ai/genkit';
@@ -15,17 +14,31 @@ const JDAnalysisInputSchema = z.object({
 export type JDAnalysisInput = z.infer<typeof JDAnalysisInputSchema>;
 
 const JDAnalysisOutputSchema = z.object({
-  extractedSkills: z.record(z.array(z.string())).describe('Skills categorized by type (e.g., "Web", "Cloud")'),
-  plan: z.array(z.object({
-    day: z.string().describe('Day or day range (e.g., "Day 1")'),
-    task: z.string().describe('The preparation task for that day')
-  })).describe('A 7-day intensive preparation plan'),
+  extractedSkills: z.object({
+    coreCS: z.array(z.string()),
+    languages: z.array(z.string()),
+    web: z.array(z.string()),
+    data: z.array(z.string()),
+    cloud: z.array(z.string()),
+    testing: z.array(z.string()),
+    other: z.array(z.string()),
+  }),
+  roundMapping: z.array(z.object({
+    roundTitle: z.string(),
+    focusAreas: z.array(z.string()),
+    whyItMatters: z.string()
+  })),
   checklist: z.array(z.object({
-    round: z.string().describe('Interview round name'),
-    items: z.array(z.string()).describe('Specific checklist items for this round')
-  })).describe('Round-wise preparation checklist'),
-  questions: z.array(z.string()).describe('Top 10 likely technical interview questions'),
-  readinessScore: z.number().describe('Calculated readiness score from 0 to 100 based on JD complexity'),
+    roundTitle: z.string(),
+    items: z.array(z.string())
+  })),
+  plan7Days: z.array(z.object({
+    day: z.string(),
+    focus: z.string(),
+    tasks: z.array(z.string())
+  })),
+  questions: z.array(z.string()),
+  baseScore: z.number(),
 });
 export type JDAnalysisOutput = z.infer<typeof JDAnalysisOutputSchema>;
 
@@ -37,22 +50,20 @@ const analyzeJobDescriptionPrompt = ai.definePrompt({
   name: 'analyzeJobDescriptionPrompt',
   input: { schema: JDAnalysisInputSchema },
   output: { schema: JDAnalysisOutputSchema },
-  prompt: `You are an expert career coach and technical recruiter at a top tech firm. Your task is to analyze a job description (JD) and provide a comprehensive preparation strategy for a candidate.
+  prompt: `You are an expert career coach. Analyze the Job Description (JD) and provide a standardized preparation strategy.
 
 Job Details:
 Company: {{{company}}}
 Role: {{{role}}}
-Description:
-{{{jdText}}}
+Description: {{{jdText}}}
 
-Based on the provided JD, please:
-1. Extract and categorize technical skills into logical groups (e.g., Languages, Web, Data, Cloud/DevOps, Core CS).
-2. Create a structured 7-day intensive preparation plan.
-3. Define a 4-round interview checklist (e.g., Round 1: Aptitude, Round 2: Tech/DSA, etc.).
-4. Generate the top 10 most likely technical interview questions based specifically on the skills found in the JD.
-5. Provide a readiness score (0-100) based on how complex the requirements are compared to a standard entry-level baseline.
-
-Be specific, actionable, and professional. Respond only with the requested JSON structure.`,
+Return a JSON following the strict schema:
+1. extractedSkills: Categorize technical keywords. If none, fill 'other' with standard prep skills.
+2. roundMapping: Explain 4 interview rounds for this role.
+3. checklist: Specific action items for each of the 4 rounds.
+4. plan7Days: A day-by-day tasks for 1 week.
+5. questions: Top 10 likely technical questions.
+6. baseScore: Difficulty/Readiness baseline (35-100).`,
 });
 
 const analyzeJobDescriptionFlow = ai.defineFlow(

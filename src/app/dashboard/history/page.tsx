@@ -3,9 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { History as HistoryIcon, Search, ChevronRight, Trash2 } from "lucide-react";
+import { History as HistoryIcon, Search, ChevronRight, Trash2, AlertCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Storage } from "@/lib/storage";
 import { AnalysisResult } from "@/lib/analysis-engine";
@@ -13,9 +12,17 @@ import { AnalysisResult } from "@/lib/analysis-engine";
 export default function HistoryPage() {
   const [history, setHistory] = useState<AnalysisResult[]>([]);
   const [search, setSearch] = useState('');
+  const [hasCorruption, setHasCorruption] = useState(false);
 
   useEffect(() => {
-    setHistory(Storage.getHistory());
+    const data = Storage.getHistory();
+    setHistory(data);
+    // Rough check for corruption based on counts
+    const raw = localStorage.getItem('placement_prep_history');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed.length > data.length) setHasCorruption(true);
+    }
   }, []);
 
   const filteredHistory = history.filter(h => 
@@ -44,6 +51,13 @@ export default function HistoryPage() {
         )}
       </div>
 
+      {hasCorruption && (
+        <div className="p-4 rounded-xl bg-destructive/10 border border-destructive/20 flex items-center gap-3 text-destructive text-sm font-medium">
+          <AlertCircle className="h-4 w-4" />
+          Some saved entries couldn't be loaded due to format changes. Create new analyses for fresh data.
+        </div>
+      )}
+
       <div className="relative max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input 
@@ -58,7 +72,7 @@ export default function HistoryPage() {
         <Card className="glass border-dashed border-white/10 py-20 text-center">
           <CardContent>
             <HistoryIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-20" />
-            <p className="text-muted-foreground mb-6">No history items found.</p>
+            <p className="text-muted-foreground mb-6">No matching history items found.</p>
             <Link href="/dashboard/analyze">
               <Button className="rounded-xl px-8 font-bold">New Analysis</Button>
             </Link>
@@ -72,12 +86,12 @@ export default function HistoryPage() {
                 <CardContent className="p-6 flex items-center justify-between">
                   <div className="flex items-center gap-6">
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex flex-col items-center justify-center">
-                      <span className="text-primary font-bold text-lg">{item.readinessScore}</span>
+                      <span className="text-primary font-bold text-lg">{item.finalScore}</span>
                       <span className="text-[8px] font-bold text-primary uppercase">Score</span>
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold group-hover:text-primary transition-colors">{item.company}</h3>
-                      <p className="text-sm text-muted-foreground font-medium">{item.role}</p>
+                      <h3 className="text-lg font-bold group-hover:text-primary transition-colors">{item.company || 'Unnamed Company'}</h3>
+                      <p className="text-sm text-muted-foreground font-medium">{item.role || 'General Role'}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-6">

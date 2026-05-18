@@ -1,4 +1,3 @@
-
 "use client"
 
 import React, { useState } from 'react';
@@ -7,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Sparkles, Loader2, Building2, Briefcase, AlertCircle } from "lucide-react";
+import { Sparkles, Loader2, Building2, Briefcase, AlertCircle, AlertTriangle } from "lucide-react";
 import { analyzeJobDescription } from "@/ai/flows/jd-analysis-flow";
 import { Storage } from "@/lib/storage";
 import { useToast } from "@/hooks/use-toast";
@@ -18,40 +17,45 @@ export default function AnalyzePage() {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ company: '', role: '', jd: '' });
 
+  const isJdShort = form.jd.length > 0 && form.jd.length < 200;
+
   const handleAnalyze = async () => {
-    if (!form.jd) return;
+    if (!form.jd || form.jd.length < 10) {
+      toast({
+        variant: "destructive",
+        title: "Missing Information",
+        description: "Please provide a valid Job Description.",
+      });
+      return;
+    }
+
     setLoading(true);
     
     try {
-      // Call real Genkit AI flow
       const result = await analyzeJobDescription({
         company: form.company,
         role: form.role,
         jdText: form.jd
       });
 
-      // Prepare final result object for storage
-      const analysisResult = {
+      const finalAnalysis = {
         ...result,
         id: crypto.randomUUID(),
         createdAt: new Date().toISOString(),
-        company: form.company,
-        role: form.role,
+        updatedAt: new Date().toISOString(),
+        company: form.company || "",
+        role: form.role || "",
         jdText: form.jd,
-        baseScore: result.readinessScore,
         skillConfidenceMap: Object.values(result.extractedSkills).flat().reduce((acc, skill) => ({
           ...acc,
           [skill]: 'practice'
-        }), {})
+        }), {}),
+        finalScore: result.baseScore
       };
 
-      // Save to local storage (temporary until Firebase Project ID is provided)
-      Storage.saveAnalysis(analysisResult as any);
-      
-      setLoading(false);
-      router.push(`/dashboard/results?id=${analysisResult.id}`);
+      Storage.saveAnalysis(finalAnalysis as any);
+      router.push(`/dashboard/results?id=${finalAnalysis.id}`);
     } catch (error) {
-      console.error("Analysis Error:", error);
       setLoading(false);
       toast({
         variant: "destructive",
@@ -79,7 +83,7 @@ export default function AnalyzePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                <Building2 className="h-3 w-3" /> Company Name
+                <Building2 className="h-3 w-3" /> Company Name (Optional)
               </label>
               <Input 
                 placeholder="e.g., Google" 
@@ -90,7 +94,7 @@ export default function AnalyzePage() {
             </div>
             <div className="space-y-2">
               <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-                <Briefcase className="h-3 w-3" /> Job Role
+                <Briefcase className="h-3 w-3" /> Job Role (Optional)
               </label>
               <Input 
                 placeholder="e.g., Frontend Engineer" 
@@ -102,13 +106,19 @@ export default function AnalyzePage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Job Description</label>
+            <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Job Description (Required)</label>
             <Textarea 
               placeholder="Paste the full job description here..." 
               className="glass border-white/10 min-h-[300px] rounded-xl p-4 resize-none focus-visible:ring-primary/20"
               value={form.jd}
               onChange={e => setForm({...form, jd: e.target.value})}
             />
+            {isJdShort && (
+              <div className="flex items-center gap-2 text-warning text-xs font-medium animate-in fade-in slide-in-from-top-1">
+                <AlertTriangle className="h-3 w-3" />
+                This JD is too short to analyze deeply. Paste full JD for better output.
+              </div>
+            )}
           </div>
 
           <Button 
@@ -119,7 +129,7 @@ export default function AnalyzePage() {
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                AI is thinking...
+                Architecting Strategy...
               </>
             ) : (
               <>
@@ -128,13 +138,6 @@ export default function AnalyzePage() {
               </>
             )}
           </Button>
-
-          <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 flex items-start gap-3">
-            <AlertCircle className="h-4 w-4 text-primary mt-0.5" />
-            <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Our AI analyzes the JD to extract specific skills, predict interview rounds, and generate a tailored study plan. Results are saved to your dashboard.
-            </p>
-          </div>
         </CardContent>
       </Card>
     </div>
