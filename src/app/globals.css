@@ -70,9 +70,14 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
   * {
     @apply border-border transition-all duration-300;
   }
+
   body {
     @apply bg-background text-foreground font-body antialiased;
     background: 
@@ -82,6 +87,7 @@
       #f8fafc;
     background-attachment: fixed;
     perspective: 1200px;
+    overflow-x: hidden;
   }
 
   .purple-black body {
@@ -103,7 +109,7 @@
   
   .glass-card {
     @apply glass rounded-3xl transform-gpu;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, background 0.4s ease;
   }
   
   .glass-card:hover {
@@ -137,6 +143,42 @@
   .purple-black .glass-sidebar {
     @apply bg-black/30 border-white/5;
   }
+}
+
+/* Custom Scrollbar for a high-end experience */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsla(var(--primary), 0.1);
+  border-radius: 20px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsla(var(--primary), 0.3);
+}
+
+.purple-black ::-webkit-scrollbar-thumb {
+  background: hsla(var(--primary), 0.2);
+}
+
+.purple-black ::-webkit-scrollbar-thumb:hover {
+  background: hsla(var(--primary), 0.5);
+}
+
+/* Utility for specific scroll areas */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: hsla(var(--primary), 0.2) transparent;
 }
 
 .animate-float {
