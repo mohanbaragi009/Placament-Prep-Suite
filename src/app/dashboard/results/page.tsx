@@ -1,7 +1,7 @@
 
 "use client"
 
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
 import { useUser, useFirebase, useDoc } from "@/firebase";
 import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
 
-export default function ResultsPage() {
+function ResultsContent() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const { user } = useUser();
@@ -127,7 +127,7 @@ ${(data.questions || []).map((q, i) => `${i + 1}. ${q}`).join('\n')}
   const weakSkills = Object.keys(data.skillConfidenceMap || {}).filter(s => data.skillConfidenceMap[s] === 'practice').slice(0, 3);
 
   return (
-    <div className="space-y-10 animate-in fade-in duration-500 pb-20">
+    <div className="space-y-10 animate-in fade-in duration-500 pb-20 min-h-screen">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <Link href="/dashboard/history" className="text-xs font-bold text-muted-foreground hover:text-primary flex items-center gap-1 mb-4">
@@ -260,5 +260,18 @@ ${(data.questions || []).map((q, i) => `${i + 1}. ${q}`).join('\n')}
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ResultsPage() {
+  return (
+    <Suspense fallback={
+      <div className="h-screen flex flex-col items-center justify-center p-10">
+        <Loader2 className="h-10 w-10 animate-spin text-primary opacity-20" />
+        <p className="mt-4 text-muted-foreground">Loading analysis...</p>
+      </div>
+    }>
+      <ResultsContent />
+    </Suspense>
   );
 }
