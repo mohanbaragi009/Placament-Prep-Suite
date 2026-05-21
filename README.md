@@ -4,10 +4,10 @@ The all-in-one, AI-powered platform designed to help candidates ace technical in
 
 ## 🚀 Zero-Config Deployment (Vercel)
 
-This project is optimized for deployment on Vercel with no complex setup required.
+This project is optimized for deployment on Vercel with **zero complex setup**.
 
 ### 1. Required Environment Variables
-To enable the AI features, add the following variable in your Vercel Project Settings:
+To enable the AI features (Job Analysis, Strategy Generation), simply add the following variable in your Vercel Project Settings:
 
 - `GOOGLE_GENAI_API_KEY`: Your Google Gemini API Key.
 
