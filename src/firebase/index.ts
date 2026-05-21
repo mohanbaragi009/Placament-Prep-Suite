@@ -10,22 +10,26 @@ let db: Firestore | null = null;
 let auth: Auth | null = null;
 
 /**
- * Initializes Firebase services.
- * Falls back to Local Mode if the minimal config is not provided.
+ * Initializes Firebase services with a fail-safe fallback.
+ * If credentials are missing, it returns null, signaling the app to use Local Storage.
  */
 export function initializeFirebase() {
-  // Only the API Key is required to attempt initialization, 
-  // though Project ID is typically needed for full cloud services.
-  if (!firebaseConfig.apiKey) {
-    console.info("Firebase API Key is missing. The app is running in Local Mode (Browser Storage only).");
+  const apiKey = firebaseConfig.apiKey;
+  const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+
+  // We require both API Key and Project ID for a functional cloud connection.
+  if (!apiKey || !projectId) {
     return null;
   }
 
   try {
     if (getApps().length === 0) {
-      // Note: Firebase usually requires a Project ID. Without it, initializeApp might throw.
-      // This catch block handles the fallback to Local Mode gracefully.
-      app = initializeApp(firebaseConfig as any);
+      app = initializeApp({
+        apiKey,
+        projectId,
+        authDomain: `${projectId}.firebaseapp.com`,
+        storageBucket: `${projectId}.appspot.com`,
+      });
     } else {
       app = getApp();
     }
@@ -33,7 +37,7 @@ export function initializeFirebase() {
     auth = getAuth(app);
     return { app, db, auth };
   } catch (error) {
-    console.info("Cloud Services unavailable (Missing Project ID). Defaulting to Local Mode.");
+    console.warn("Firebase initialization failed. Defaulting to Local Mode.");
     return null;
   }
 }

@@ -2,28 +2,23 @@
 
 The all-in-one, AI-powered platform designed to help candidates ace technical interviews.
 
-## 🚀 Key Features
+## 🚀 Deployment (Vercel)
 
-- **AI Strategist**: JD analysis and 7-day roadmaps.
-- **Readiness Dashboard**: Visual analytics and skill tracking.
-- **Practice Ecosystem**: Curated library of coding problems.
-- **Local-First Architecture**: Works entirely in your browser without complex cloud setup.
-
-## 🛠️ Deployment (Vercel)
-
-This project is optimized for deployment on Vercel with minimal configuration.
+This project is optimized for deployment on Vercel with zero-config requirement.
 
 ### Environment Variables
 
-To enable AI features, you only need to provide the following variables in your Vercel Project Settings:
+To enable AI features, you only need to provide the following variable in your Vercel Project Settings:
 
-1. **AI Engine**:
+1. **AI Engine (Mandatory)**:
    - `GOOGLE_GENAI_API_KEY`: Your Google Gemini API Key.
 
-2. **Client Authentication (Optional)**:
+2. **Cloud Sync (Optional)**:
    - `NEXT_PUBLIC_FIREBASE_API_KEY`: Your Firebase API Key.
+   - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`: Your Firebase Project ID.
 
-*Note: If a Project ID is not provided, the app automatically runs in **Local Mode**, saving all progress securely to your browser's Local Storage.*
+**Note on "Local Mode":**
+If Firebase variables are not provided, the app automatically runs in **Local Mode**. In this mode, all your progress, profile data, and job analyses are saved securely and exclusively to your browser's Local Storage.
 
 ### Steps to Deploy
 

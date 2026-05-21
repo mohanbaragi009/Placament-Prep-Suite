@@ -61,19 +61,19 @@ export default function AnalyzePage() {
         finalScore: result.baseScore
       };
 
-      // Save to Firestore if authenticated
+      // Always save to local storage first (reliable fallback)
+      Storage.saveAnalysis(finalAnalysis as any);
+
+      // Save to Firestore ONLY if initialized and user is signed in
       if (user && db) {
         const analysisRef = doc(db, "users", user.uid, "analyses", analysisId);
         setDoc(analysisRef, {
           ...finalAnalysis,
           timestamp: serverTimestamp()
         }).catch(err => {
-          console.error("Error saving to Firestore:", err);
+          console.warn("Firestore sync skipped or failed. Progress is safe in Local Mode.");
         });
       }
-
-      // Always save to local storage for quick access/offline fallback
-      Storage.saveAnalysis(finalAnalysis as any);
 
       router.push(`/dashboard/results?id=${analysisId}`);
     } catch (error) {
@@ -81,7 +81,7 @@ export default function AnalyzePage() {
       toast({
         variant: "destructive",
         title: "Analysis Failed",
-        description: "The AI was unable to process this job description. Please try again.",
+        description: "The AI was unable to process this job description. Please ensure your API Key is valid.",
       });
     }
   };
@@ -103,7 +103,6 @@ export default function AnalyzePage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-8 space-y-10">
-          {/* AI Strategy Insight Banner */}
           <div className="p-5 rounded-2xl bg-primary/5 border border-primary/10 flex items-center gap-4 backdrop-blur-sm relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none">
               <Zap className="h-16 w-16 text-primary" />
