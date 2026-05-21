@@ -2,29 +2,25 @@
 
 The all-in-one, AI-powered platform designed to help candidates ace technical interviews.
 
-## 🚀 Deployment (Vercel)
+## 🚀 Zero-Config Deployment (Vercel)
 
-This project is optimized for deployment on Vercel with zero-config requirement.
+This project is optimized for deployment on Vercel with no complex setup required.
 
-### Environment Variables
+### 1. Required Environment Variables
+To enable the AI features, add the following variable in your Vercel Project Settings:
 
-To enable AI features, you only need to provide the following variable in your Vercel Project Settings:
+- `GOOGLE_GENAI_API_KEY`: Your Google Gemini API Key.
 
-1. **AI Engine (Mandatory)**:
-   - `GOOGLE_GENAI_API_KEY`: Your Google Gemini API Key.
+### 2. Deployment Mode: "Local-First"
+By default, the app runs in **Local Mode**. In this mode:
+- **No Database Needed**: All your progress, job analyses, and profile data are saved securely and exclusively to your browser's Local Storage.
+- **Privacy Focused**: Your data stays with you.
+- **AI Ready**: The AI Strategist works instantly using your Gemini key.
 
-2. **Cloud Sync (Optional)**:
-   - `NEXT_PUBLIC_FIREBASE_API_KEY`: Your Firebase API Key.
-   - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`: Your Firebase Project ID.
-
-**Note on "Local Mode":**
-If Firebase variables are not provided, the app automatically runs in **Local Mode**. In this mode, all your progress, profile data, and job analyses are saved securely and exclusively to your browser's Local Storage.
-
-### Steps to Deploy
-
-1. Connect your repository to Vercel.
-2. Add the `GOOGLE_GENAI_API_KEY`.
-3. Deploy!
+### 3. Optional: Cloud Sync (Firebase)
+If you wish to sync data across devices in the future, you can optionally provide:
+- `NEXT_PUBLIC_FIREBASE_API_KEY`
+- `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
 
 ---
 

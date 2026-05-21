@@ -2,8 +2,7 @@
 
 /**
  * Minimal Firebase configuration.
- * Only the API Key is retained as per request.
- * All other identifiers (Project ID, App ID, etc.) are removed.
+ * Retains only the API Key. All other IDs are optional.
  */
 export const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,

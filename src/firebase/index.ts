@@ -12,13 +12,15 @@ let auth: Auth | null = null;
 /**
  * Initializes Firebase services with a fail-safe fallback.
  * If credentials are missing, it returns null, signaling the app to use Local Storage.
+ * This ensures "Zero-Config" deployment on Vercel is possible.
  */
 export function initializeFirebase() {
   const apiKey = firebaseConfig.apiKey;
+  // Project ID is optional. If missing, we default to Local Mode.
   const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
 
-  // We require both API Key and Project ID for a functional cloud connection.
   if (!apiKey || !projectId) {
+    // Gracefully fallback to local storage mode without errors
     return null;
   }
 
@@ -37,7 +39,7 @@ export function initializeFirebase() {
     auth = getAuth(app);
     return { app, db, auth };
   } catch (error) {
-    console.warn("Firebase initialization failed. Defaulting to Local Mode.");
+    // Fail silently to avoid interrupting the user experience in Local Mode
     return null;
   }
 }
